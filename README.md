@@ -1,4 +1,8 @@
-# FloAspectBar — TBC Classic Anniversary
+<p align="center">
+  <img src="media/art/troll_hunter_400.png" width="200" alt="FloAspectBar">
+</p>
+
+<h1 align="center" style="color:#AAD372;">FloAspectBar — TBC Classic Anniversary</h1>
 
 A Hunter aspect bar addon for **WoW TBC Classic Anniversary** (Interface 20505). Displays all 7 Hunter aspects as clickable buttons with cooldown tracking and keybinding support.
 
