@@ -1,12 +1,10 @@
-tag b036bc6a060f0a3af594bf618443886d11f1b9c7 10.2.28
-Author:	Floraline <floraline@ophiuchus.org>
-Date:	Thu Dec 7 09:28:08 2023 +0100
+v1.0.0-TBC (2026-02-12)
+- Ported to TBC Classic Anniversary (Interface 20505)
+- Added Aspect of the Viper (spell ID 34074) — 7 aspects total
+- Stripped all retail/mainline code paths
+- Fixed BackdropTemplateMixin for modern client engine
+- Replaced SmallActionButtonTemplate with TBC-compatible button template
+- Fixed ColorPicker cancel callback for modern API
+- Removed invalid LEARNED_SPELL_IN_TAB event
 
-Tagging for mainline fix
-
-commit c125e723fc95b8840afb60a5b6fe902443291088
-Author: Floraline <floraline@ophiuchus.org>
-Date:   Thu Dec 7 09:22:58 2023 +0100
-
-    update toc version
-
+Original addon by Floraline (10.2.28, Dec 2023)
