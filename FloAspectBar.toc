@@ -1,0 +1,9 @@
+## Interface: 20505
+## Title: FloAspectBar
+## Author: paradosi-Dreamscythe
+## Notes: Hunter aspect bar for TBC Classic Anniversary. Originally by Floraline.
+## Version: 1.0.0-TBC
+## Category-enUS: Hunter
+## SavedVariablesPerCharacter: FLOASPECTBAR_OPTIONS, FLOASPECTBAR_OPTIONS2
+FloLib.xml
+FloAspectBar.xml
