@@ -700,7 +700,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 		bar.settings.color[1] = previous.r;
 		bar.settings.color[2] = previous.g;
 		bar.settings.color[3] = previous.b;
-		bar.settings.color[4] = 1.0 - previous.opacity;
+		bar.settings.color[4] = 1.0 - (previous.opacity or previous.a or 0);
 
 		if bar.globalSettings.borders then
 			FloLib_ShowBorders(bar)
