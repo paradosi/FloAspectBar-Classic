@@ -51,3 +51,7 @@ Originally created by **Floraline** (MPL 2.0). Ported to TBC Classic Anniversary
 ## License
 
 [Mozilla Public License 2.0](http://mozilla.org/MPL/2.0/)
+
+---
+
+[![Buy Me A Coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=paradosi&button_colour=5F7FFF&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00)](https://www.buymeacoffee.com/paradosi)
