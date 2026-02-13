@@ -121,7 +121,7 @@
 				end
 			</OnUpdate>
 			<OnDragStart>
-				if self:GetParent().settings.position == "unlock" then
+				if not InCombatLockdown() and self:GetParent().settings.position == "unlock" then
 					self:GetParent():StartMoving();
 				end
 			</OnDragStart>
@@ -332,7 +332,7 @@
 				FloLib_BarDropDown_Show(self, button);
 			</OnMouseUp>
 			<OnDragStart>
-				if self.settings.position == "unlock" then
+				if not InCombatLockdown() and self.settings.position == "unlock" then
 					self:StartMoving();
 				end
 			</OnDragStart>
