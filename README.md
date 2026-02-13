@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="media/art/troll_hunter_400.png" width="200" alt="FloAspectBar">
+  <img src="https://raw.githubusercontent.com/paradosi/FloAspectBar_TBC/main/media/art/troll_hunter_400.png" width="200" alt="FloAspectBar">
 </p>
 
 <h1 align="center" style="color:#AAD372;">FloAspectBar — TBC Classic Anniversary</h1>
@@ -23,11 +23,11 @@ Originally created by **Floraline** (MPL 2.0). Ported to TBC Classic Anniversary
 
 ## Screenshots
 
-![Aspect Bar Tooltip](media/screenshots/aspect-bar-tooltip.png)
+![Aspect Bar Tooltip](https://raw.githubusercontent.com/paradosi/FloAspectBar_TBC/main/media/screenshots/aspect-bar-tooltip.png)
 
-![Aspect Bar Options](media/screenshots/aspect-bar-options.png)
+![Aspect Bar Options](https://raw.githubusercontent.com/paradosi/FloAspectBar_TBC/main/media/screenshots/aspect-bar-options.png)
 
-![Aspect Bar Color Picker](media/screenshots/aspect-bar-colorpicker.png)
+![Aspect Bar Color Picker](https://raw.githubusercontent.com/paradosi/FloAspectBar_TBC/main/media/screenshots/aspect-bar-colorpicker.png)
 
 ## Slash Commands
 
@@ -51,7 +51,3 @@ Originally created by **Floraline** (MPL 2.0). Ported to TBC Classic Anniversary
 ## License
 
 [Mozilla Public License 2.0](http://mozilla.org/MPL/2.0/)
-
----
-
-[![Buy Me A Coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=&slug=paradosi&button_colour=5F7FFF&font_colour=ffffff&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00)](https://www.buymeacoffee.com/paradosi)
