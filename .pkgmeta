@@ -1,0 +1,10 @@
+package-as: FloAspectBar
+
+ignore:
+  - README.md
+  - CHANGELOG.md
+  - CHANGES.txt
+  - .github
+  - .gitignore
+  - media/art
+  - media/screenshots
