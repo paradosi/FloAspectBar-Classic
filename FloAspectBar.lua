@@ -6,7 +6,7 @@
 -- Constants
 -------------------------------------------------------------------------------
 
-local VERSION = "1.0.0-TBC"
+local VERSION = "1.0.1-TBC"
 
 -------------------------------------------------------------------------------
 -- Variables
@@ -53,7 +53,6 @@ function FloAspectBar_OnLoad(self)
 	self.UpdateState = FloAspectBar_UpdateState;
 	self.menuHooks = { SetPosition = FloAspectBar_SetPosition, SetBorders = FloAspectBar_SetBorders };
 	self:EnableMouse(1);
-	PetActionBar:EnableMouse(false);
 
 	if SHOW_WELCOME then
 		DEFAULT_CHAT_FRAME:AddMessage( "|cffd78900FloAspectBar v"..VERSION.."|r loaded." );
