@@ -2,7 +2,7 @@
 ## Title: FloAspectBar
 ## Author: paradosi-Dreamscythe
 ## Notes: Hunter aspect bar with keybindings. Originally by Floraline.
-## Version: 1.1.0
+## Version: 1.1.1
 ## Category-enUS: Hunter
 ## IconTexture: Interface\AddOns\FloAspectBar\media\textures\troll_hunter_64
 ## X-Wago-ID: EGPeBjN1
