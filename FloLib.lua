@@ -12,7 +12,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 
 	FLOLIB_VERSION = 1.44;
 
-	FLOLIB_ACTIVATE_SPEC = GetSpellInfo(200749);
+	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
 	StaticPopupDialogs["FLOLIB_CONFIRM_RESET"] = {
 		text = FLOLIB_CONFIRM_RESET,
@@ -383,8 +383,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 
 			--Cooldown stuffs
 			cooldown = _G[self:GetName().."Button"..i.."Cooldown"];
-			local _, _, _, _, _, _, maxRankId = GetSpellInfo(GetSpellInfo(spell.id));
-			if maxRankId == nil then return end
+			local maxRankId = spell.id;
 			start, duration, enable, charges, maxCharges = GetSpellCooldown(maxRankId);
 			if spell.talented then
 				start2, duration2, enable2 = GetSpellCooldown(spell.talented);
@@ -431,7 +430,9 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 				--GameTooltip_SetDefaultAnchor(GameTooltip, self);
 			else
 				GameTooltip:SetOwner(self, "ANCHOR_NONE");
-				GameTooltip:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -CONTAINER_OFFSET_X - 13, CONTAINER_OFFSET_Y + self:GetHeight());
+				local offsetX = CONTAINER_OFFSET_X or 0;
+			local offsetY = CONTAINER_OFFSET_Y or 0;
+			GameTooltip:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -offsetX - 13, offsetY + self:GetHeight());
 				GameTooltip.default = 1;
 			end
 		else
@@ -440,9 +441,11 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 		local spell = self:GetParent().spells[self:GetID()];
 		if spell then
 			-- get id of max rank
-			local _, _, _, _, _, _, maxRankId = GetSpellInfo(GetSpellInfo(spell.id));
+			local maxRankId = spell.id;
 			--Display the tooltip
-			GameTooltip:SetSpellByID(maxRankId);
+			if maxRankId then
+				GameTooltip:SetSpellByID(maxRankId);
+			end
 			GameTooltip:Show();
 		end
 	end
@@ -684,7 +687,14 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 	end
 
 	function FloLib_BarDropDown_SetOpacity()
-		local a = 1.0 - OpacitySliderFrame:GetValue();
+		local a
+		if OpacitySliderFrame then
+			a = 1.0 - OpacitySliderFrame:GetValue();
+		elseif ColorPickerFrame and ColorPickerFrame.GetColorAlpha then
+			a = ColorPickerFrame:GetColorAlpha();
+		else
+			a = 1.0;
+		end
 		local bar = UIDropDownMenu_GetCurrentDropDown():GetParent();
 
 		bar.settings.color[4] = a;
