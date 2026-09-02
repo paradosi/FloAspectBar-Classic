@@ -10,7 +10,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 	local NUM_SPELL_SLOTS = 10;
 	local SCHOOL_COLORS = { 1.0, 0.7, 0.0 };
 
-	FLOLIB_VERSION = 1.44;
+	FLOLIB_VERSION = 1.45;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -364,6 +364,22 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 		FloLib_UpdateState(self);
 	end
 
+	-- Resolve the spell id of the highest rank the player currently knows.
+	-- data.lua stores the rank-1 id, so using it directly would show a rank-1
+	-- tooltip and mis-report usability/cost for higher ranks.
+	function FloLib_GetMaxRankId(spell)
+
+		if C_Spell and C_Spell.GetSpellInfo and spell.name then
+			local info = C_Spell.GetSpellInfo(spell.name);
+			if info and info.spellID then
+				return info.spellID;
+			end
+		end
+		-- Legacy fallback (same idiom as FloLib.xml OnDragStart): querying by
+		-- name returns the highest known rank's id as the 7th value.
+		return select(7, GetSpellInfo(GetSpellInfo(spell.id))) or spell.id;
+	end
+
 	-- Update the state of the buttons in a FloBar
 	function FloLib_UpdateState(self)
 
@@ -383,7 +399,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 
 			--Cooldown stuffs
 			cooldown = _G[self:GetName().."Button"..i.."Cooldown"];
-			local maxRankId = spell.id;
+			local maxRankId = FloLib_GetMaxRankId(spell);
 			start, duration, enable, charges, maxCharges = GetSpellCooldown(maxRankId);
 			if spell.talented then
 				start2, duration2, enable2 = GetSpellCooldown(spell.talented);
@@ -441,7 +457,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 		local spell = self:GetParent().spells[self:GetID()];
 		if spell then
 			-- get id of max rank
-			local maxRankId = spell.id;
+			local maxRankId = FloLib_GetMaxRankId(spell);
 			--Display the tooltip
 			if maxRankId then
 				GameTooltip:SetSpellByID(maxRankId);
