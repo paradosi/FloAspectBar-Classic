@@ -2,6 +2,23 @@
 -- License, v. 2.0. If a copy of the MPL was not distributed with this file,
 -- You can obtain one at http://mozilla.org/MPL/2.0/.
 
+-- =============================================================================
+-- FloLib -- shared button/bar engine, VENDORED SEPARATELY INTO BOTH ADDONS.
+--
+-- FloAspectBar-Classic/FloLib.lua and FloTotemBar-Classic/FloLib.lua are two
+-- copies of this file. They are NOT symlinked and nothing syncs them; they had
+-- silently diverged once already (FloAspectBar was left on 1.44 without
+-- FloLib_GetMaxRankId, so aspect tooltips showed rank 1). As of FLOLIB_VERSION
+-- 1.45 the two .lua copies are byte-identical -- keep them that way: change
+-- both, bump FLOLIB_VERSION in both, and diff them before releasing either.
+--
+-- FloLib.xml is the deliberate exception. Its template names differ by addon
+-- (FloButtonTemplateA / FloCountdownA / FloBarTemplateA in FloAspectBar versus
+-- ...T in FloTotemBar) so both addons can be loaded at once without colliding
+-- on global frame names. Do NOT "fix" that difference.
+-- =============================================================================
+
+
 -- Some shared functions
 -- Prevent multi-loading
 if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
@@ -188,7 +205,15 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 
 	end
 
-	-- Check if a glyph is active
+	-- Check if a glyph is active.
+	--
+	-- WARNING: THIS CANNOT WORK ON THE CLIENTS THIS ADDON SHIPS FOR.
+	-- Glyphs arrived in Wrath (3.0). On Classic Era and TBC Anniversary both
+	-- NUM_GLYPH_SLOTS and GetGlyphSocketInfo are nil, so the loop below would
+	-- throw "'for' limit must be a number" the moment it ran. Nothing calls
+	-- this today, which is the only reason it is harmless -- it is kept solely
+	-- to stay close to upstream FloLib. If you ever need it, guard it first:
+	--     if not NUM_GLYPH_SLOTS then return false end
 	function FloLib_IsGlyphActive(glyphId)
 			for i = 1, NUM_GLYPH_SLOTS do
 					local enabled, _, _, glyphSpellID, _ = GetGlyphSocketInfo(i);
@@ -401,6 +426,11 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 			cooldown = _G[self:GetName().."Button"..i.."Cooldown"];
 			local maxRankId = FloLib_GetMaxRankId(spell);
 			start, duration, enable, charges, maxCharges = GetSpellCooldown(maxRankId);
+			-- Talent-modified spell variants. Dead on TBC/Era: no entry in
+			-- data.lua sets `talented`, so this branch never runs. Kept because
+			-- it is upstream FloLib behaviour and would work correctly if
+			-- talent variants were ever added to the data. (enable2 is fetched
+			-- but unused -- the base spell decides whether the swipe shows.)
 			if spell.talented then
 				start2, duration2, enable2 = GetSpellCooldown(spell.talented);
 				if start > 0 and start2 > 0 then
