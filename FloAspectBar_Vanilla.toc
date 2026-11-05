@@ -1,4 +1,4 @@
-## Interface: 11508
+## Interface: 11509
 ## Title: FloAspectBar
 ## Author: paradosi-Dreamscythe
 ## Notes: Hunter aspect bar with keybindings. Originally by Floraline.
