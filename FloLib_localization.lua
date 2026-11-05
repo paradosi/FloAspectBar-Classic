@@ -107,8 +107,6 @@ FLOLIB_POSITIONS = { unlock = "解除鎖定", lock = "鎖定位置", auto = "自
 FLOLIB_SHOWBORDERS = "顯示邊框";
 FLOLIB_LAYOUT = "格式";
 FLOLIB_CONFIRM_RESET = "您真正地想要重新設置 '%s' 嗎? 介面將會重新截入。";
-FLOLIB_ACTIVATE_SPEC_1 = "啟用主要天賦配置";
-FLOLIB_ACTIVATE_SPEC_2 = "啟用第二天賦配置"; 
 
 end
 

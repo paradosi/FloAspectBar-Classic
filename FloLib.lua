@@ -23,13 +23,13 @@
 -- Prevent multi-loading
 -- Compare against this copy's own version, so a newer FloLib loaded second
 -- replaces an older one instead of the first-loaded copy always winning.
-if not FLOLIB_VERSION or FLOLIB_VERSION < 1.46 then
+if not FLOLIB_VERSION or FLOLIB_VERSION < 1.47 then
 
 	local _
 	local NUM_SPELL_SLOTS = 10;
 	local SCHOOL_COLORS = { 1.0, 0.7, 0.0 };
 
-	FLOLIB_VERSION = 1.46;
+	FLOLIB_VERSION = 1.47;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -111,19 +111,6 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.46 then
 				FloLib_CopyPreserve(v, dst[k]);
 			end
 		end
-	end
-
-	-- Init an array of integers from 1 to n
-	function FloLib_Identity(n)
-
-		local tmp = {};
-		local i;
-
-		for i = 1, n do
-			tmp[i] = i;
-		end
-
-		return tmp;
 	end
 
 

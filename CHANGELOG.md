@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - **"Lock Action Bars" was ignored**: aspects could be dragged off the bar without Shift. The bar now honours the setting and the pick-up modifier, like Blizzard's action bars.
 
 ### Changed
+- Removed unused code and translations
 - FloLib 1.46 (shared with FloTotemBar): the active-aspect check uses `C_UnitAuras` instead of the deprecated `UnitBuff`; unused glyph and talent helpers removed.
 
 ## [1.2.2]
