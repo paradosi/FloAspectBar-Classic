@@ -4,6 +4,12 @@ All notable changes to FloAspectBar-Classic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.2]
+
+### Changed
+- Updated for the current clients (TBC Anniversary 2.5.6 and Classic Era 1.15.9), so the addon no longer shows as out of date
+- Release notes on CurseForge and Wago are now this changelog instead of the commit log
+
 ## [1.2.1]
 
 ### Fixed
