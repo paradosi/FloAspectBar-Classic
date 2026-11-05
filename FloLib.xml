@@ -42,7 +42,7 @@
 				self:RegisterForClicks("LeftButtonDown", "LeftButtonUp", "RightButtonUp");
 			</OnLoad>
 			<OnDragStart>
-				if not InCombatLockdown() and (LOCK_ACTIONBAR ~= "1" or IsShiftKeyDown()) then
+				if not InCombatLockdown() and (not GetCVarBool("lockActionBars") or IsModifiedClick("PICKUPACTION")) then
 					local spell = self:GetParent().spells[self:GetID()];
 					if spell then
 						local _, _, _, _, _, _, maxRankId = GetSpellInfo(GetSpellInfo(spell.id));

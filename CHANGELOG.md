@@ -4,6 +4,15 @@ All notable changes to FloAspectBar-Classic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.3]
+
+### Fixed
+- **Dragging a hidden aspect from the spellbook onto the bar caused a Lua error.** It is now ignored.
+- **"Lock Action Bars" was ignored**: aspects could be dragged off the bar without Shift. The bar now honours the setting and the pick-up modifier, like Blizzard's action bars.
+
+### Changed
+- FloLib 1.46 (shared with FloTotemBar): the active-aspect check uses `C_UnitAuras` instead of the deprecated `UnitBuff`; unused glyph and talent helpers removed.
+
 ## [1.2.2]
 
 ### Changed

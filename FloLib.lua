@@ -21,13 +21,15 @@
 
 -- Some shared functions
 -- Prevent multi-loading
-if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
+-- Compare against this copy's own version, so a newer FloLib loaded second
+-- replaces an older one instead of the first-loaded copy always winning.
+if not FLOLIB_VERSION or FLOLIB_VERSION < 1.46 then
 
 	local _
 	local NUM_SPELL_SLOTS = 10;
 	local SCHOOL_COLORS = { 1.0, 0.7, 0.0 };
 
-	FLOLIB_VERSION = 1.45;
+	FLOLIB_VERSION = 1.46;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -139,7 +141,10 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 			end
 		end
 
-		if not idx1 and idx2 then
+		-- Parenthesised on purpose: "not idx1 and idx2" let a missing idx2
+		-- through to tab[nil] = val1, a Lua error when a hidden spell was
+		-- dropped from the spellbook onto its bar.
+		if not (idx1 and idx2) then
 			-- one of the value not found, do nothing
 			return;
 		end
@@ -205,40 +210,6 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 
 	end
 
-	-- Check if a glyph is active.
-	--
-	-- WARNING: THIS CANNOT WORK ON THE CLIENTS THIS ADDON SHIPS FOR.
-	-- Glyphs arrived in Wrath (3.0). On Classic Era and TBC Anniversary both
-	-- NUM_GLYPH_SLOTS and GetGlyphSocketInfo are nil, so the loop below would
-	-- throw "'for' limit must be a number" the moment it ran. Nothing calls
-	-- this today, which is the only reason it is harmless -- it is kept solely
-	-- to stay close to upstream FloLib. If you ever need it, guard it first:
-	--     if not NUM_GLYPH_SLOTS then return false end
-	function FloLib_IsGlyphActive(glyphId)
-			for i = 1, NUM_GLYPH_SLOTS do
-					local enabled, _, _, glyphSpellID, _ = GetGlyphSocketInfo(i);
-					if enabled and glyphSpellID == glyphId then
-							return true;
-					end
-			end
-			return false;
-	end
-
-	-- Return the rank of a talent
-	function FloLib_GetTalentRank(talentName, tree)
-
-		local nt = GetNumTalents(tree);
-		local n, r, m, i;
-
-		for i = 1, nt do
-			n, _, _, _, r, m = GetTalentInfo(tree, i);
-			if n == talentName then
-				return r, m;
-			end
-		end
-		return 0, 0;
-	end
-
 	-- Show/hide a spell
 	function FloLib_ToggleSpell(self, bar, idx)
 
@@ -298,7 +269,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 
 		for n = 1, #self.availableSpells do
 
-			if numSpells > NUM_SPELL_SLOTS then
+			if numSpells >= NUM_SPELL_SLOTS then
 				break;
 			end
 
@@ -777,16 +748,27 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.44 then
 		CloseDropDownMenus();
 	end
 
+	-- Name of the unit's i-th buff. C_UnitAuras first: UnitBuff survives only
+	-- as a Blizzard_Deprecated fallback on these clients.
+	local function FloLib_BuffName(unit, i)
+		if C_UnitAuras and C_UnitAuras.GetBuffDataByIndex then
+			local aura = C_UnitAuras.GetBuffDataByIndex(unit, i);
+			return aura and aura.name;
+		else
+			return (UnitBuff(unit, i));
+		end
+	end
+
 	function FloLib_UnitHasBuff(unit, name)
 
 		local i = 1;
-		local buff = UnitBuff(unit, i);
+		local buff = FloLib_BuffName(unit, i);
 		while buff do
 			if buff == name then
 				return true;
 			end
 			i = i + 1;
-			buff = UnitBuff(unit, i);
+			buff = FloLib_BuffName(unit, i);
 		end
 		return false;
 	end

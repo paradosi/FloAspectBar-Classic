@@ -8,7 +8,7 @@ A Hunter aspect bar addon for **WoW Classic Era** and **TBC Classic Anniversary*
 
 Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-Dreamscythe**.
 
-![Classic Era: 11508](https://img.shields.io/badge/Classic_Era-11508-yellow) ![TBC Anniversary: 20505](https://img.shields.io/badge/TBC_Anniversary-20505-blue)
+![Classic Era: 11509](https://img.shields.io/badge/Classic_Era-11509-yellow) ![TBC Anniversary: 20506](https://img.shields.io/badge/TBC_Anniversary-20506-blue)
 
 ## Features
 
