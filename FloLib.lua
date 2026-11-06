@@ -23,13 +23,13 @@
 -- Prevent multi-loading
 -- Compare against this copy's own version, so a newer FloLib loaded second
 -- replaces an older one instead of the first-loaded copy always winning.
-if not FLOLIB_VERSION or FLOLIB_VERSION < 1.47 then
+if not FLOLIB_VERSION or FLOLIB_VERSION < 1.48 then
 
 	local _
 	local NUM_SPELL_SLOTS = 10;
 	local SCHOOL_COLORS = { 1.0, 0.7, 0.0 };
 
-	FLOLIB_VERSION = 1.47;
+	FLOLIB_VERSION = 1.48;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -456,6 +456,11 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.47 then
 
 	function FloLib_StartTimer(self, guid, spellid)
 
+		-- a secret spell id (WoW Forever) cannot be matched against the bar
+		if not canaccessvalue(spellid) then
+			return;
+		end
+
 		local founded = false;
 		local name, startTime, duration;
 		local countdown;
@@ -736,11 +741,16 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.47 then
 	end
 
 	-- Name of the unit's i-th buff. C_UnitAuras first: UnitBuff survives only
-	-- as a Blizzard_Deprecated fallback on these clients.
+	-- as a Blizzard_Deprecated fallback on these clients. nil past the last
+	-- buff; false for a buff whose name is a secret value (WoW Forever), which
+	-- addon code may not compare.
 	local function FloLib_BuffName(unit, i)
 		if C_UnitAuras and C_UnitAuras.GetBuffDataByIndex then
 			local aura = C_UnitAuras.GetBuffDataByIndex(unit, i);
-			return aura and aura.name;
+			if not aura then
+				return nil;
+			end
+			return canaccessvalue(aura.name) and aura.name or false;
 		else
 			return (UnitBuff(unit, i));
 		end
@@ -750,7 +760,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.47 then
 
 		local i = 1;
 		local buff = FloLib_BuffName(unit, i);
-		while buff do
+		while buff ~= nil do
 			if buff == name then
 				return true;
 			end

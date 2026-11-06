@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [1.2.3]
 
+### Added
+- **WoW Forever support.**
+
 ### Fixed
 - **`/fab borders` and `/fab noborders` did nothing useful**: both hid the borders. They now show and hide them as described.
 - **Moving or rescaling the bar in combat** (`/fab lock`, `unlock`, `auto`, `scale`, or the right-click Position menu) could cause "Interface action failed because of an AddOn". These now say you can't do that in combat and wait for you to leave it.

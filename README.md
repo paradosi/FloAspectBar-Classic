@@ -4,11 +4,11 @@
 
 <h1 align="center" style="color:#AAD372;">FloAspectBar — Classic</h1>
 
-A Hunter aspect bar addon for **WoW Classic Era** and **TBC Classic Anniversary**. Displays Hunter aspects as clickable buttons with cooldown tracking and keybinding support.
+A Hunter aspect bar addon for **WoW Classic Era**, **TBC Classic Anniversary** and **WoW Forever**. Displays Hunter aspects as clickable buttons with cooldown tracking and keybinding support.
 
 Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-Dreamscythe**.
 
-![Classic Era: 11509](https://img.shields.io/badge/Classic_Era-11509-yellow) ![TBC Anniversary: 20506](https://img.shields.io/badge/TBC_Anniversary-20506-blue)
+![Classic Era: 11509](https://img.shields.io/badge/Classic_Era-11509-yellow) ![TBC Anniversary: 20506](https://img.shields.io/badge/TBC_Anniversary-20506-blue) ![WoW Forever: 16001](https://img.shields.io/badge/WoW_Forever-16001-purple)
 
 ## Features
 
@@ -52,13 +52,14 @@ Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-D
    |---------|-------------|----------|
    | Classic Era | `_classic_era_/Interface/AddOns/FloAspectBar/` | `FloAspectBar_Vanilla.toc` |
    | TBC Anniversary | `_anniversary_/Interface/AddOns/FloAspectBar/` | `FloAspectBar.toc` |
+   | WoW Forever | `_forever_/Interface/AddOns/FloAspectBar/` | `FloAspectBar_Camelot.toc` |
 
 2. Log in on a Hunter character
 3. The aspect bar appears automatically above your action bars
 
 ## Compatibility
 
-This addon is designed for **Classic Era** and **TBC Classic** only. It does not support Retail WoW — Hunter aspects were removed in Mists of Pandaria.
+This addon is designed for **Classic Era**, **TBC Classic** and **WoW Forever** only. It does not support Retail WoW — Hunter aspects were removed in Mists of Pandaria.
 
 ## License
 
