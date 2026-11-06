@@ -31,20 +31,26 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.49 then
 
 	-- WoW Forever runs Retail's API: the flat spell functions are gone, and
 	-- C_Spell returns tables. These keep the Classic return shapes. On TBC and
-	-- Era the globals exist and are used as before.
+	-- Era the globals exist and are used as before. The old globals returned
+	-- nil for a nil or unknown spell; C_Spell raises a usage error instead.
 	local GetSpellInfo = GetSpellInfo or function(spell)
+		if spell == nil then return; end
 		local info = C_Spell.GetSpellInfo(spell);
 		if info then
-			return info.name, nil, info.iconID;
+			return info.name, nil, info.iconID, info.castTime, info.minRange, info.maxRange, info.spellID;
 		end
 	end;
 	local GetSpellCooldown = GetSpellCooldown or function(spell)
+		if spell == nil then return; end
 		local cd = C_Spell.GetSpellCooldown(spell);
 		if cd then
 			return cd.startTime, cd.duration, cd.isEnabled and 1 or 0;
 		end
 	end;
-	local IsUsableSpell = IsUsableSpell or C_Spell.IsSpellUsable;
+	local IsUsableSpell = IsUsableSpell or function(spell)
+		if spell == nil then return; end
+		return C_Spell.IsSpellUsable(spell);
+	end;
 	-- removed from every current client; Blizzard's old tooltip background
 	local TOOLTIP_BG = TOOLTIP_DEFAULT_BACKGROUND_COLOR or { r = 0.09, g = 0.09, b = 0.19 };
 
