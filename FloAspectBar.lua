@@ -10,7 +10,7 @@
 -- both .toc files on every release. It silently drifted to 1.1.0 while the
 -- TOCs said 1.2.0, so the addon announced the wrong version for two releases.
 -- FloTotemBar has the same hand-maintained string; check both.
-local VERSION = "1.2.3"
+local VERSION = "1.2.4"
 
 -------------------------------------------------------------------------------
 -- Variables
@@ -18,6 +18,8 @@ local VERSION = "1.2.3"
 
 local _
 local SHOW_WELCOME = true;
+-- WoW Forever renamed the main action bar frame
+local MainMenuBar = MainMenuBar or MainActionBar;
 local FLOASPECTBAR_BARSETTINGS_DEFAULT = { position = "auto", buttonsOrder = {}, color = { 0, 0.49, 0, 0.7 }, hiddenSpells = {} };
 local FLOASPECTBAR_OPTIONS_DEFAULT = { [1] = { scale = 1, borders = true, barSettings = FLOASPECTBAR_BARSETTINGS_DEFAULT }, active = 1 };
 FLOASPECTBAR_OPTIONS = FLOASPECTBAR_OPTIONS_DEFAULT;
@@ -91,7 +93,11 @@ function FloAspectBar_OnEvent(self, event, arg1, ...)
 		FloAspectBar_CheckTalentGroup(FLOASPECTBAR_OPTIONS.active);
 
 		-- Hook the UIParent_ManageFramePositions function
-		hooksecurefunc("UIParent_ManageFramePositions", FloAspectBar_UpdatePosition);
+		-- Forever (Retail's UI) has no UIParent_ManageFramePositions; Blizzard's
+		-- edit-mode layout places its bars there.
+		if UIParent_ManageFramePositions then
+			hooksecurefunc("UIParent_ManageFramePositions", FloAspectBar_UpdatePosition);
+		end
 		FloLib_UpdateBindings(self, "SHAPESHIFT");
 
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" then

@@ -23,13 +23,32 @@
 -- Prevent multi-loading
 -- Compare against this copy's own version, so a newer FloLib loaded second
 -- replaces an older one instead of the first-loaded copy always winning.
-if not FLOLIB_VERSION or FLOLIB_VERSION < 1.48 then
+if not FLOLIB_VERSION or FLOLIB_VERSION < 1.49 then
 
 	local _
 	local NUM_SPELL_SLOTS = 10;
 	local SCHOOL_COLORS = { 1.0, 0.7, 0.0 };
 
-	FLOLIB_VERSION = 1.48;
+	-- WoW Forever runs Retail's API: the flat spell functions are gone, and
+	-- C_Spell returns tables. These keep the Classic return shapes. On TBC and
+	-- Era the globals exist and are used as before.
+	local GetSpellInfo = GetSpellInfo or function(spell)
+		local info = C_Spell.GetSpellInfo(spell);
+		if info then
+			return info.name, nil, info.iconID;
+		end
+	end;
+	local GetSpellCooldown = GetSpellCooldown or function(spell)
+		local cd = C_Spell.GetSpellCooldown(spell);
+		if cd then
+			return cd.startTime, cd.duration, cd.isEnabled and 1 or 0;
+		end
+	end;
+	local IsUsableSpell = IsUsableSpell or C_Spell.IsSpellUsable;
+	-- removed from every current client; Blizzard's old tooltip background
+	local TOOLTIP_BG = TOOLTIP_DEFAULT_BACKGROUND_COLOR or { r = 0.09, g = 0.09, b = 0.19 };
+
+	FLOLIB_VERSION = 1.49;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -81,7 +100,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.48 then
 			self:SetBackdropColor(r, g, b, a);
 		else
 			self:SetBackdropBorderColor(0.5, 0.5, 0.5);
-			self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b, 0.7);
+			self:SetBackdropColor(TOOLTIP_BG.r, TOOLTIP_BG.g, TOOLTIP_BG.b, 0.7);
 		end
 
 	end
@@ -171,16 +190,21 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.48 then
 			return;
 		end
 
-		local cursorType, index, info, i;
+		local cursorType, index, info, spellID, i;
 
-		cursorType, index, info = GetCursorInfo();
+		cursorType, index, info, spellID = GetCursorInfo();
 
-		if cursorType ~= "spell" or info ~= BOOKTYPE_SPELL then
+		if cursorType ~= "spell" or (BOOKTYPE_SPELL and info ~= BOOKTYPE_SPELL) then
 			return;
 		end
 
 		local button = self;
-		local newspell = GetSpellBookItemName(index, info);
+		local newspell;
+		if GetSpellBookItemName then
+			newspell = GetSpellBookItemName(index, info);
+		elseif spellID then
+			newspell = C_Spell.GetSpellName(spellID); -- WoW Forever
+		end
 		self = self:GetParent();
 
 		-- find the spell in the curent list
@@ -384,12 +408,15 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.48 then
 			cooldown = _G[self:GetName().."Button"..i.."Cooldown"];
 			local maxRankId = FloLib_GetMaxRankId(spell);
 			start, duration, enable, charges, maxCharges = GetSpellCooldown(maxRankId);
+			-- WoW Forever hides cooldowns from addons when restricted; leave the
+			-- swipe as it is rather than compare secret values
+			local cooldownReadable = canaccessvalue(start) and canaccessvalue(duration);
 			-- Talent-modified spell variants. Dead on TBC/Era: no entry in
 			-- data.lua sets `talented`, so this branch never runs. Kept because
 			-- it is upstream FloLib behaviour and would work correctly if
 			-- talent variants were ever added to the data. (enable2 is fetched
 			-- but unused -- the base spell decides whether the swipe shows.)
-			if spell.talented then
+			if cooldownReadable and spell.talented then
 				start2, duration2, enable2 = GetSpellCooldown(spell.talented);
 				if start > 0 and start2 > 0 then
 					start = math.min(start, start2);
@@ -405,7 +432,9 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.48 then
 				cooldown:SetHideCountdownNumbers(false);
 				cooldown.currentCooldownType = COOLDOWN_TYPE_NORMAL;
 			end
-			CooldownFrame_Set(cooldown, start, duration, enable, charges, maxCharges);
+			if cooldownReadable then
+				CooldownFrame_Set(cooldown, start, duration, enable, charges, maxCharges);
+			end
 
 			--Castable stuffs
 			normalTexture = _G[self:GetName().."Button"..i.."NormalTexture"];

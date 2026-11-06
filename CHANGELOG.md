@@ -4,6 +4,15 @@ All notable changes to FloAspectBar-Classic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.4]
+
+### Fixed
+- **WoW Forever: Lua errors at login and when casting**, and the bar could stay empty. Forever has no `GetSpellInfo`, `GetSpellCooldown` or `IsUsableSpell`; the bar now uses the newer spell API there.
+- **WoW Forever: the bar could not position itself** ("attempt to index global 'MainMenuBar'"). Forever renamed the main action bar; the bar now anchors to it.
+- **WoW Forever: dragging a spell from the spellbook onto the bar** now works with the new spellbook.
+- Cooldown swirls are skipped instead of erroring when the game hides cooldown values from addons.
+- Shared library FloLib updated to 1.49 (same fix in FloTotemBar and FloAspectBar; update both if you use both).
+
 ## [1.2.3]
 
 ### Added
