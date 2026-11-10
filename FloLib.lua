@@ -54,7 +54,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.49 then
 	-- removed from every current client; Blizzard's old tooltip background
 	local TOOLTIP_BG = TOOLTIP_DEFAULT_BACKGROUND_COLOR or { r = 0.09, g = 0.09, b = 0.19 };
 
-	FLOLIB_VERSION = 1.49;
+	FLOLIB_VERSION = 1.50;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -778,8 +778,14 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.49 then
 	-- Name of the unit's i-th buff. C_UnitAuras first: UnitBuff survives only
 	-- as a Blizzard_Deprecated fallback on these clients. nil past the last
 	-- buff; false for a buff whose name is a secret value (WoW Forever), which
-	-- addon code may not compare.
+	-- addon code may not compare; true when the buff is secret and must not be
+	-- queried at all: GetBuffDataByIndex raises an error, not a secret value,
+	-- when tainted code asks for a secret aura.
 	local function FloLib_BuffName(unit, i)
+		if C_Secrets and C_Secrets.ShouldUnitAuraIndexBeSecret
+				and C_Secrets.ShouldUnitAuraIndexBeSecret(unit, i, "HELPFUL") then
+			return true;
+		end
 		if C_UnitAuras and C_UnitAuras.GetBuffDataByIndex then
 			local aura = C_UnitAuras.GetBuffDataByIndex(unit, i);
 			if not aura then
@@ -791,12 +797,20 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.49 then
 		end
 	end
 
+	-- true or false, or nil when the game is hiding auras from addons (WoW
+	-- Forever, in restricted combat) and the answer cannot be known.
 	function FloLib_UnitHasBuff(unit, name)
+
+		if C_Secrets and C_Secrets.ShouldAurasBeSecret and C_Secrets.ShouldAurasBeSecret() then
+			return nil;
+		end
 
 		local i = 1;
 		local buff = FloLib_BuffName(unit, i);
 		while buff ~= nil do
-			if buff == name then
+			if buff == true then
+				return nil;
+			elseif buff == name then
 				return true;
 			end
 			i = i + 1;

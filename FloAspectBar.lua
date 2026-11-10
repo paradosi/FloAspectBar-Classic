@@ -10,7 +10,7 @@
 -- both .toc files on every release. It silently drifted to 1.1.0 while the
 -- TOCs said 1.2.0, so the addon announced the wrong version for two releases.
 -- FloTotemBar has the same hand-maintained string; check both.
-local VERSION = "1.2.4"
+local VERSION = "1.2.5"
 
 -------------------------------------------------------------------------------
 -- Variables
@@ -76,6 +76,9 @@ function FloAspectBar_OnLoad(self)
 	self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 	self:RegisterEvent("ACTIONBAR_UPDATE_USABLE");
 	self:RegisterEvent("UNIT_AURA");
+	if C_Secrets then
+		self:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED");
+	end
 	self:RegisterEvent("UPDATE_BINDINGS");
 	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 end
@@ -219,7 +222,12 @@ function FloAspectBar_UpdateState(self, pos)
 	local button = _G[self:GetName().."Button"..pos];
 	local spell = self.spells[pos];
 
-	if FloLib_UnitHasBuff("player", spell.name) then
+	local hasBuff = FloLib_UnitHasBuff("player", spell.name);
+	if hasBuff == nil then
+		-- Auras are hidden from addons right now: keep the button as it is.
+		-- ADDON_RESTRICTION_STATE_CHANGED refreshes it when they return.
+		return;
+	elseif hasBuff then
 		FloLib_StartTimer(self, nil, spell.id);
 	elseif self["activeSpell"..pos] == pos then
         FloLib_ResetTimer(self, pos);

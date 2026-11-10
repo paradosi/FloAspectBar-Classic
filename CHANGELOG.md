@@ -4,6 +4,12 @@ All notable changes to FloAspectBar-Classic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.5] - 2026-11-10
+
+### Fixed
+- **WoW Forever: "Auras cannot be accessed when secret" errors** while auras are hidden from addons in combat. The bar now leaves the active aspect highlighted as it was and catches up once auras are visible again.
+- Shared library FloLib updated to 1.50 (same fix in FloTotemBar and FloAspectBar; update both if you use both).
+
 ## [1.2.4]
 
 ### Fixed
