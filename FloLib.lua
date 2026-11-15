@@ -23,7 +23,7 @@
 -- Prevent multi-loading
 -- Compare against this copy's own version, so a newer FloLib loaded second
 -- replaces an older one instead of the first-loaded copy always winning.
-if not FLOLIB_VERSION or FLOLIB_VERSION < 1.49 then
+if not FLOLIB_VERSION or FLOLIB_VERSION < 1.51 then
 
 	local _
 	local NUM_SPELL_SLOTS = 10;
@@ -54,7 +54,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.49 then
 	-- removed from every current client; Blizzard's old tooltip background
 	local TOOLTIP_BG = TOOLTIP_DEFAULT_BACKGROUND_COLOR or { r = 0.09, g = 0.09, b = 0.19 };
 
-	FLOLIB_VERSION = 1.50;
+	FLOLIB_VERSION = 1.51;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -692,6 +692,22 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.49 then
 			info.arg1 = not bar.globalSettings.borders;
 
 			if bar.globalSettings.borders then
+				info.checked = 1;
+			end
+			UIDropDownMenu_AddButton(info);
+		end
+
+		-- Optional addon-defined toggle (FloTotemBar: hide Blizzard's totem
+		-- bar). The hook carries its own label, so it needs no FloLib string:
+		-- FloLib_localization.lua is skipped when an older FloLib loaded first.
+		if bar.menuHooks and bar.menuHooks.Toggle then
+			local hook = bar.menuHooks.Toggle;
+			info = UIDropDownMenu_CreateInfo();
+			info.text = hook.text;
+			info.func = hook.set;
+			info.arg1 = not hook.get();
+
+			if hook.get() then
 				info.checked = 1;
 			end
 			UIDropDownMenu_AddButton(info);
