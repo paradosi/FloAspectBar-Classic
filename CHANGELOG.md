@@ -4,10 +4,10 @@ All notable changes to FloAspectBar-Classic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [Unreleased]
+## [1.2.6] - 2026-11-15
 
 ### Changed
-- Shared library FloLib updated to 1.51 (adds a menu hook FloTotemBar 1.2.7 uses; no change to FloAspectBar's behaviour).
+- Shared library FloLib updated to 1.51 (same change in FloTotemBar and FloAspectBar; update both if you use both). Nothing changes in FloAspectBar itself.
 
 ## [1.2.5] - 2026-11-10
 
