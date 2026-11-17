@@ -4,7 +4,7 @@ All notable changes to FloAspectBar-Classic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [Unreleased]
+## [1.2.7] - 2026-11-17
 
 ### Fixed
 - **WoW Forever: a Lua error when dragging a spell off the bar** (Shift-drag, or with action bars unlocked). The spell is now picked up correctly.
