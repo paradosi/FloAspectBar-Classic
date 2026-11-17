@@ -45,8 +45,9 @@
 				if not InCombatLockdown() and (not GetCVarBool("lockActionBars") or IsModifiedClick("PICKUPACTION")) then
 					local spell = self:GetParent().spells[self:GetID()];
 					if spell then
-						local _, _, _, _, _, _, maxRankId = GetSpellInfo(GetSpellInfo(spell.id));
-						PickupSpell(maxRankId);
+						-- C_Spell.PickupSpell exists on every client; the flat
+						-- GetSpellInfo/PickupSpell are gone on WoW Forever.
+						C_Spell.PickupSpell(FloLib_GetMaxRankId(spell));
 					end
 				end
 			</OnDragStart>

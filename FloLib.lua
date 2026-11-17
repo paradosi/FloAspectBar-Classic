@@ -23,7 +23,7 @@
 -- Prevent multi-loading
 -- Compare against this copy's own version, so a newer FloLib loaded second
 -- replaces an older one instead of the first-loaded copy always winning.
-if not FLOLIB_VERSION or FLOLIB_VERSION < 1.51 then
+if not FLOLIB_VERSION or FLOLIB_VERSION < 1.52 then
 
 	local _
 	local NUM_SPELL_SLOTS = 10;
@@ -54,7 +54,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.51 then
 	-- removed from every current client; Blizzard's old tooltip background
 	local TOOLTIP_BG = TOOLTIP_DEFAULT_BACKGROUND_COLOR or { r = 0.09, g = 0.09, b = 0.19 };
 
-	FLOLIB_VERSION = 1.51;
+	FLOLIB_VERSION = 1.52;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -71,10 +71,11 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.51 then
 		hideOnEscape = 1,
 	};
 
-	-- Loads LibButtonFacade
-	local LBF = nil;
-	if LibStub then
-		LBF = LibStub('Masque', true);
+	-- Masque skinning, looked up when a bar is set up rather than when this
+	-- file loads: Masque sorts after both Flo addons, so at load time it was
+	-- never there unless a TOC listed it as a dependency.
+	local function FloLib_GetMasque()
+		return LibStub and LibStub('Masque', true);
 	end
 
 	-- Reset addon
@@ -333,9 +334,12 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.51 then
 					self:SetWidth(numSpells * 42 + 12 );
 				end
 
+				-- One Masque group per addon (the bar sets masqueGroup), so a
+				-- lone FloAspectBar no longer skins under "FloTotemBar".
 				local group;
+				local LBF = FloLib_GetMasque();
 				if LBF then
-					group = LBF:Group('FloTotemBar');
+					group = LBF:Group(self.masqueGroup or 'FloTotemBar');
 				end
 
 				for i=1, NUM_SPELL_SLOTS do

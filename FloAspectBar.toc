@@ -7,6 +7,7 @@
 ## IconTexture: Interface\AddOns\FloAspectBar\media\textures\troll_hunter_64
 ## X-Wago-ID: EGPeBjN1
 ## X-Curse-Project-ID: 1460576
+## OptionalDeps: Masque
 ## SavedVariablesPerCharacter: FLOASPECTBAR_OPTIONS, FLOASPECTBAR_OPTIONS2
 FloLib.xml
 FloAspectBar.xml

@@ -46,6 +46,7 @@ function FloAspectBar_OnLoad(self)
 	end
 
 	self.hideCooldowns = true;
+	self.masqueGroup = "FloAspectBar";
 
 	-- Store the spell list for later
 	self.availableSpells = classSpells;
