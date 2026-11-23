@@ -21,7 +21,9 @@ Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-D
 - **Customizable background** — Color picker with opacity slider
 - **Show/hide borders** — Toggle bar borders via right-click menu
 - **Per-spell visibility** — Hide aspects you don't use
-- **Scalable** — Adjust bar scale via slash command
+- **Scalable** — Adjust bar scale in the settings or via slash command
+- **Settings panel** — Esc > Options > AddOns > FloAspectBar, or **Options...** in the bar's right-click menu
+- **Minimap button** — Left-click for settings, right-click to lock/unlock the bar, drag to move it; can be turned off (WoW Forever also lists the addon in the addon compartment)
 
 ## Screenshots
 
@@ -36,6 +38,8 @@ Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-D
 | Command | Description |
 |---------|-------------|
 | `/fab` | Show help |
+| `/fab options` | Open the settings panel |
+| `/fab minimap` | Show or hide the minimap button |
 | `/fab lock` | Lock bar position |
 | `/fab unlock` | Unlock bar (drag to move) |
 | `/fab auto` | Automatic positioning above action bars |

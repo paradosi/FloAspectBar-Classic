@@ -23,7 +23,7 @@
 -- Prevent multi-loading
 -- Compare against this copy's own version, so a newer FloLib loaded second
 -- replaces an older one instead of the first-loaded copy always winning.
-if not FLOLIB_VERSION or FLOLIB_VERSION < 1.52 then
+if not FLOLIB_VERSION or FLOLIB_VERSION < 1.53 then
 
 	local _
 	local NUM_SPELL_SLOTS = 10;
@@ -54,7 +54,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.52 then
 	-- removed from every current client; Blizzard's old tooltip background
 	local TOOLTIP_BG = TOOLTIP_DEFAULT_BACKGROUND_COLOR or { r = 0.09, g = 0.09, b = 0.19 };
 
-	FLOLIB_VERSION = 1.52;
+	FLOLIB_VERSION = 1.53;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -735,6 +735,16 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.52 then
 			UIDropDownMenu_AddButton(info);
 		end
 
+		-- Optional link to the addon's Settings panel. Like Toggle, the hook
+		-- carries its own label.
+		if bar.menuHooks and bar.menuHooks.Options then
+			info = UIDropDownMenu_CreateInfo();
+			info.text = bar.menuHooks.Options.text;
+			info.func = bar.menuHooks.Options.func;
+			info.notCheckable = 1;
+			UIDropDownMenu_AddButton(info);
+		end
+
 	end
 
 	function FloLib_BarDropDown_SetBackGroundColor()
@@ -837,6 +847,98 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.52 then
 			buff = FloLib_BuffName(unit, i);
 		end
 		return false;
+	end
+
+	-- Minimap button, one per addon. Drawn like LibDBIcon's (same textures and
+	-- geometry) so it sits with other addons' buttons, but without the library:
+	-- the Flo addons ship none. db is a saved table: db.angle (degrees around
+	-- the minimap) and db.hide. onClick(button, mouseButton) and
+	-- onTooltip(GameTooltip) come from the addon, so no FloLib strings.
+	local function FloLib_MinimapButton_Place(button)
+
+		local angle = math.rad(button.db.angle or 225);
+		local x, y = math.cos(angle), math.sin(angle);
+		local w = (Minimap:GetWidth() / 2) + 5;
+		local h = (Minimap:GetHeight() / 2) + 5;
+		-- GetMinimapShape is not Blizzard's: minimap addons define it
+		local shape = GetMinimapShape and GetMinimapShape() or "ROUND";
+		if shape ~= "ROUND" then
+			-- square (or any other shape): ride the edge of the box
+			local d = math.max(math.abs(x), math.abs(y));
+			x, y = x / d, y / d;
+		end
+		button:ClearAllPoints();
+		button:SetPoint("CENTER", Minimap, "CENTER", x * w, y * h);
+	end
+
+	local function FloLib_MinimapButton_OnUpdate(button)
+
+		local mx, my = Minimap:GetCenter();
+		local px, py = GetCursorPosition();
+		local scale = Minimap:GetEffectiveScale();
+		button.db.angle = math.deg(math.atan2(py / scale - my, px / scale - mx)) % 360;
+		FloLib_MinimapButton_Place(button);
+	end
+
+	function FloLib_CreateMinimapButton(name, db, icon, onClick, onTooltip)
+
+		local button = CreateFrame("Button", name, Minimap);
+		button.db = db;
+		button:SetFrameStrata("MEDIUM");
+		button:SetFrameLevel(8);
+		button:SetSize(31, 31);
+		button:RegisterForClicks("AnyUp");
+		button:RegisterForDrag("LeftButton");
+		button:SetHighlightTexture(136477); -- Interface\Minimap\UI-Minimap-ZoomButton-Highlight
+
+		local overlay = button:CreateTexture(nil, "OVERLAY");
+		overlay:SetSize(53, 53);
+		overlay:SetTexture(136430); -- Interface\Minimap\MiniMap-TrackingBorder
+		overlay:SetPoint("TOPLEFT");
+		local background = button:CreateTexture(nil, "BACKGROUND");
+		background:SetSize(20, 20);
+		background:SetTexture(136467); -- Interface\Minimap\UI-Minimap-Background
+		background:SetPoint("TOPLEFT", 7, -5);
+		local texture = button:CreateTexture(nil, "ARTWORK");
+		texture:SetSize(17, 17);
+		texture:SetTexture(icon);
+		texture:SetPoint("TOPLEFT", 7, -6);
+		button.icon = texture;
+
+		button:SetScript("OnClick", function(self, mouseButton)
+			onClick(self, mouseButton);
+		end);
+		button:SetScript("OnDragStart", function(self)
+			self:LockHighlight();
+			GameTooltip:Hide();
+			self:SetScript("OnUpdate", FloLib_MinimapButton_OnUpdate);
+		end);
+		button:SetScript("OnDragStop", function(self)
+			self:SetScript("OnUpdate", nil);
+			self:UnlockHighlight();
+		end);
+		button:SetScript("OnEnter", function(self)
+			GameTooltip:SetOwner(self, "ANCHOR_LEFT");
+			onTooltip(GameTooltip);
+			GameTooltip:Show();
+		end);
+		button:SetScript("OnLeave", function()
+			GameTooltip:Hide();
+		end);
+
+		FloLib_UpdateMinimapButton(button);
+		return button;
+	end
+
+	-- Show or hide (db.hide) and place the button
+	function FloLib_UpdateMinimapButton(button)
+
+		if button.db.hide then
+			button:Hide();
+		else
+			FloLib_MinimapButton_Place(button);
+			button:Show();
+		end
 	end
 
 	end

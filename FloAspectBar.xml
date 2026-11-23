@@ -6,6 +6,7 @@
 	<Script file="localization.lua"/>
 	<Script file="data.lua"/>
 	<Script file="FloAspectBar.lua"/>
+	<Script file="Options.lua"/>
 
 	<Frame name="FloAspectBar" inherits="FloBarTemplateA">
 		<Anchors>

@@ -10,7 +10,7 @@
 -- both .toc files on every release. It silently drifted to 1.1.0 while the
 -- TOCs said 1.2.0, so the addon announced the wrong version for two releases.
 -- FloTotemBar has the same hand-maintained string; check both.
-local VERSION = "1.2.8"
+local VERSION = "1.3.0"
 
 -------------------------------------------------------------------------------
 -- Variables
@@ -58,7 +58,8 @@ function FloAspectBar_OnLoad(self)
 	self.SetupSpell = FloAspectBar_SetupSpell;
 	self.OnSetup = FloAspectBar_OnSetup;
 	self.UpdateState = FloAspectBar_UpdateState;
-	self.menuHooks = { SetPosition = FloAspectBar_SetPosition, SetBorders = FloAspectBar_SetBorders };
+	self.menuHooks = { SetPosition = FloAspectBar_SetPosition, SetBorders = FloAspectBar_SetBorders,
+		Options = { text = "Options...", func = function() FloAspectBar_OpenOptions(); end } };
 	self:EnableMouse(1);
 
 	if SHOW_WELCOME then
@@ -107,6 +108,7 @@ function FloAspectBar_OnEvent(self, event, arg1, ...)
 			hooksecurefunc("UIParent_ManageFramePositions", FloAspectBar_UpdatePosition);
 		end
 		FloLib_UpdateBindings(self, "SHAPESHIFT");
+		FloAspectBar_InitOptions();
 
 	elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
 		if arg1 == "player" then
@@ -186,10 +188,17 @@ function FloAspectBar_ReadCmd(line)
 		FloAspectBar_ShowAllSpells();
 	elseif cmd == "status" then
 		FloAspectBar_PrintStatus();
+	elseif cmd == "options" or cmd == "config" then
+		FloAspectBar_OpenOptions();
+	elseif cmd == "minimap" then
+		FloAspectBar_SetMinimapButton(FLOASPECTBAR_OPTIONS.minimap.hide);
+		DEFAULT_CHAT_FRAME:AddMessage("FloAspectBar: minimap button "..(FLOASPECTBAR_OPTIONS.minimap.hide and "hidden" or "shown"));
 	elseif cmd == "panic" or cmd == "reset" then
 		FloLib_ResetAddon("FloAspectBar");
 	else
 		DEFAULT_CHAT_FRAME:AddMessage( "FloAspectBar usage :" );
+		DEFAULT_CHAT_FRAME:AddMessage( "/fab options : Open the settings (Esc > Options > AddOns)" );
+		DEFAULT_CHAT_FRAME:AddMessage( "/fab minimap : Show/hide the minimap button" );
 		DEFAULT_CHAT_FRAME:AddMessage( "/fab lock|unlock : lock/unlock position" );
 		DEFAULT_CHAT_FRAME:AddMessage( "/fab borders|noborders : show/hide borders" );
 		DEFAULT_CHAT_FRAME:AddMessage( "/fab auto : Automatic positioning" );
