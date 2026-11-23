@@ -42,6 +42,8 @@ Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-D
 | `/fab scale <num>` | Set bar scale (e.g. `/fab scale 1.5`) |
 | `/fab borders` | Show borders |
 | `/fab noborders` | Hide borders |
+| `/fab show` | Bring back aspects hidden from the bar's right-click menu |
+| `/fab status` | Show what is on the bar, what is hidden, and where the bar is |
 | `/fab reset` | Reset all settings (reloads UI) |
 
 ## Installation

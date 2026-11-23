@@ -10,7 +10,7 @@
 -- both .toc files on every release. It silently drifted to 1.1.0 while the
 -- TOCs said 1.2.0, so the addon announced the wrong version for two releases.
 -- FloTotemBar has the same hand-maintained string; check both.
-local VERSION = "1.2.7"
+local VERSION = "1.2.8"
 
 -------------------------------------------------------------------------------
 -- Variables
@@ -81,6 +81,10 @@ function FloAspectBar_OnLoad(self)
 		self:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED");
 	end
 	self:RegisterEvent("UPDATE_BINDINGS");
+	self:RegisterEvent("PLAYER_ENTERING_WORLD");
+	if not C_EventUtils or C_EventUtils.IsEventValid("EDIT_MODE_LAYOUTS_UPDATED") then
+		self:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED");
+	end
 	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 end
 
@@ -111,6 +115,12 @@ function FloAspectBar_OnEvent(self, event, arg1, ...)
 
 	elseif event == "UPDATE_BINDINGS" then
 		FloLib_UpdateBindings(self, "SHAPESHIFT");
+
+	elseif event == "PLAYER_ENTERING_WORLD" or event == "EDIT_MODE_LAYOUTS_UPDATED" then
+		-- ADDON_LOADED placed the bar before Blizzard (and any action bar addon)
+		-- had laid out the main bars; Forever has no UIParent_ManageFramePositions
+		-- to re-run it, so place it again once the layout is final.
+		FloAspectBar_UpdatePosition();
 
 	elseif event == "UNIT_AURA" then
 		if arg1 == PlayerFrame.unit then
@@ -161,7 +171,7 @@ function FloAspectBar_ReadCmd(line)
 
 	local cmd, var = strsplit(' ', line or "");
 
-	if InCombatLockdown() and (cmd == "scale" or cmd == "lock" or cmd == "unlock" or cmd == "auto") then
+	if InCombatLockdown() and (cmd == "scale" or cmd == "lock" or cmd == "unlock" or cmd == "auto" or cmd == "show") then
 		-- moving or scaling the bar moves its secure buttons: blocked in combat
 		DEFAULT_CHAT_FRAME:AddMessage("FloAspectBar: "..(ERR_NOT_IN_COMBAT or "You can't do that while in combat"));
 	elseif cmd == "scale" and tonumber(var) then
@@ -172,6 +182,10 @@ function FloAspectBar_ReadCmd(line)
 		FloAspectBar_SetBorders(nil, true);
 	elseif cmd == "noborders" then
 		FloAspectBar_SetBorders(nil, false);
+	elseif cmd == "show" then
+		FloAspectBar_ShowAllSpells();
+	elseif cmd == "status" then
+		FloAspectBar_PrintStatus();
 	elseif cmd == "panic" or cmd == "reset" then
 		FloLib_ResetAddon("FloAspectBar");
 	else
@@ -180,6 +194,8 @@ function FloAspectBar_ReadCmd(line)
 		DEFAULT_CHAT_FRAME:AddMessage( "/fab borders|noborders : show/hide borders" );
 		DEFAULT_CHAT_FRAME:AddMessage( "/fab auto : Automatic positioning" );
 		DEFAULT_CHAT_FRAME:AddMessage( "/fab scale <num> : Set scale" );
+		DEFAULT_CHAT_FRAME:AddMessage( "/fab show : Bring back aspects hidden from the bar" );
+		DEFAULT_CHAT_FRAME:AddMessage( "/fab status : What the bar shows and where it is" );
 		DEFAULT_CHAT_FRAME:AddMessage( "/fab panic||reset : Reset FloAspectBar" );
 		return;
 	end
@@ -216,6 +232,101 @@ function FloAspectBar_OnSetup(self)
 			RegisterStateDriver(self, "visibility", "show")
 		end
 	end
+
+	-- Hiding the last aspect from the right-click menu hides the bar, and with
+	-- it the only way to open that menu. Say so, once, instead of vanishing.
+	local numHidden = FloAspectBar_CountHidden();
+	if next(self.spells) == nil and numHidden > 0 then
+		if not self.allHiddenNotified then
+			DEFAULT_CHAT_FRAME:AddMessage("FloAspectBar: the bar is hidden because it has no aspects to show ("..numHidden.." hidden). Type /fab show to bring them back.");
+			self.allHiddenNotified = true;
+		end
+	else
+		self.allHiddenNotified = nil;
+	end
+end
+
+function FloAspectBar_CountHidden()
+
+	local n = 0;
+	for _ in pairs(ACTIVE_OPTIONS.barSettings.hiddenSpells) do
+		n = n + 1;
+	end
+	return n;
+end
+
+function FloAspectBar_SpellName(spell)
+
+	return spell.name or (C_Spell and C_Spell.GetSpellName and C_Spell.GetSpellName(spell.id)) or ("spell "..spell.id);
+end
+
+function FloAspectBar_ShowAllSpells()
+
+	local numHidden = FloAspectBar_CountHidden();
+	ACTIVE_OPTIONS.barSettings.hiddenSpells = {};
+	FloLib_Setup(FloAspectBar);
+	FloAspectBar_UpdatePosition();
+
+	if next(FloAspectBar.spells) == nil then
+		DEFAULT_CHAT_FRAME:AddMessage("FloAspectBar: no aspects learned yet, so there is nothing to show.");
+	else
+		DEFAULT_CHAT_FRAME:AddMessage("FloAspectBar: "..numHidden.." hidden aspect(s) back on the bar.");
+	end
+end
+
+-- One-look diagnosis for "my bar is gone": what is on it, what is hidden or
+-- not learned, and where the bar actually is.
+function FloAspectBar_PrintStatus()
+
+	local bar = FloAspectBar;
+	local settings = ACTIVE_OPTIONS.barSettings;
+	local function say(msg)
+		DEFAULT_CHAT_FRAME:AddMessage("|cffd78900FloAspectBar|r "..msg);
+	end
+
+	say("v"..VERSION..", position "..tostring(settings.position)..", scale "..tostring(ACTIVE_OPTIONS.scale));
+
+	local onBar, onBarNames = {}, {};
+	for i = 1, #bar.spells do
+		onBar[bar.spells[i].name] = true;
+		onBarNames[#onBarNames + 1] = bar.spells[i].name;
+	end
+	local hidden, missing = {}, {};
+	for n, spell in ipairs(bar.availableSpells) do
+		local name = FloAspectBar_SpellName(spell);
+		if settings.hiddenSpells[n] then
+			hidden[#hidden + 1] = name;
+		elseif not onBar[name] then
+			missing[#missing + 1] = name;
+		end
+	end
+	say("On the bar ("..#onBarNames.."): "..(#onBarNames > 0 and table.concat(onBarNames, ", ") or "none"));
+	say("Hidden ("..#hidden.."): "..(#hidden > 0 and table.concat(hidden, ", ") or "none"));
+	say("Not learned ("..#missing.."): "..(#missing > 0 and table.concat(missing, ", ") or "none"));
+
+	local where;
+	local left, bottom, width, height = bar:GetRect();
+	local offScreen;
+	if not left then
+		where = "has no position";
+		offScreen = true;
+	else
+		-- GetRect is in the bar's own scale; convert to UIParent's
+		local s = bar:GetEffectiveScale() / UIParent:GetEffectiveScale();
+		local l, b, r, t = left * s, bottom * s, (left + width) * s, (bottom + height) * s;
+		offScreen = r < 0 or t < 0 or l > UIParent:GetWidth() or b > UIParent:GetHeight();
+		where = string.format("%s at %.0f, %.0f", offScreen and "OFF SCREEN" or "on screen", l, b);
+	end
+	local point, rel, relPoint, x, y = bar:GetPoint(1);
+	local relName = rel and rel.GetName and rel:GetName() or "screen";
+	say("Bar is "..(bar:IsShown() and "shown" or "hidden")..", "..where
+		..(point and string.format(" (%s of %s %s, %.0f, %.0f)", point, relName, tostring(relPoint), x or 0, y or 0) or ""));
+
+	if #onBarNames == 0 and #hidden > 0 then
+		say("Nothing is on the bar and some aspects are hidden: /fab show brings them back.");
+	elseif offScreen then
+		say("Type /fab auto to put the bar back above your action bars.");
+	end
 end
 
 function FloAspectBar_UpdateState(self, pos)
@@ -248,7 +359,14 @@ function FloAspectBar_UpdatePosition()
 	local xOffset = 512;
 	local anchorFrame;
 
-	if not MainMenuBar:IsShown() and not (VehicleMenuBar and VehicleMenuBar:IsShown()) then
+	-- IsVisible, not IsShown, and the main bar must have a position. Action bar
+	-- addons (Dominos, Bartender, ElvUI) hide Blizzard's bar by reparenting it to
+	-- a hidden frame or clearing its points, which leaves IsShown() true:
+	-- anchoring to it then parked this bar off screen, or left it with no
+	-- position at all, and the bar simply vanished.
+	local mainBarUsable = MainMenuBar and MainMenuBar:IsVisible() and MainMenuBar:GetLeft() ~= nil;
+
+	if not mainBarUsable then
 		anchorFrame = UIParent;
 		yOffset = 110 - UIParent:GetHeight();
 	else

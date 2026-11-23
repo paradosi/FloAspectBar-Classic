@@ -4,6 +4,16 @@ All notable changes to FloAspectBar-Classic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.2.8] - 2026-11-22
+
+### Fixed
+- **The bar could disappear when automatic positioning was on**, most often with an action bar addon (Dominos, Bartender, ElvUI) that hides Blizzard's main bar. The aspect bar now only sits above the main bar when that bar is actually on screen, falls back to the bottom of the screen otherwise, and positions itself again once the game has finished laying out its bars.
+
+### Added
+- **`/fab show`** brings back every aspect hidden from the bar's right-click menu. Hiding the last aspect hides the whole bar, and with it the menu, so there was no way back short of `/fab reset`.
+- **A chat message when the bar hides itself** because every aspect on it is hidden, saying how to get them back.
+- **`/fab status`** prints what is on the bar, what is hidden or not learned yet, and where the bar is (including whether it is off screen). If your bar goes missing, paste its output in your report.
+
 ## [1.2.7] - 2026-11-17
 
 ### Fixed
