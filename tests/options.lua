@@ -190,7 +190,7 @@ for _, file in ipairs({ "Theme.lua", "Widgets.lua", "Options.lua" }) do
     assert(loadfile(file))("FloAspectBar", ns)
 end
 FloAspectBar_InitOptions()
-check(Settings.category and Settings.category.name == "FloAspectBar", "panel registered under Options > AddOns")
+check(Settings.category and Settings.category.name == "FloAspectBar Forever", "panel registered under Options > AddOns")
 FloAspectBar_OpenOptions()
 check(opened == 42, "FloAspectBar_OpenOptions opens it")
 

@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/art/logo_400.png" width="200" alt="FloAspectBar">
+  <img src="https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/art/logo_400.png" width="200" alt="FloAspectBar Forever">
 </p>
 
-<h1 align="center" style="color:#AAD372;">FloAspectBar — Classic</h1>
+<h1 align="center">FloAspectBar Forever</h1>
 
 A Hunter aspect bar addon for **WoW Forever**. Displays Hunter aspects as clickable buttons with cooldown tracking and keybinding support.
 
-Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-Dreamscythe**.
+Originally created by **Floraline** (MPL 2.0). Maintained for WoW Forever by **paradosi-Dreamscythe**.
 
 ![WoW Forever: 16001](https://img.shields.io/badge/WoW_Forever-16001-purple)
 
@@ -22,7 +22,7 @@ Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-D
 - **Show/hide borders** — Toggle bar borders via right-click menu
 - **Per-spell visibility** — Hide aspects you don't use
 - **Scalable** — Adjust bar scale in the settings or via slash command
-- **Settings panel** — in the same look as the other WoW Forever addons (navy, gold, two columns). Esc > Options > AddOns > FloAspectBar, or **Options...** in the bar's right-click menu
+- **Settings panel** — in the same look as the other WoW Forever addons (navy, gold, two columns). Esc > Options > AddOns > FloAspectBar Forever, or **Options...** in the bar's right-click menu
 - **Minimap button** — Left-click for settings, right-click to lock/unlock the bar, drag to move it; can be turned off (WoW Forever also lists the addon in the addon compartment)
 
 ## Screenshots
@@ -35,7 +35,7 @@ Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-D
 
 ## Help and bug reports
 
-The settings panel (*Esc > Options > AddOns > FloAspectBar*) shows the installed version in its
+The settings panel (*Esc > Options > AddOns > FloAspectBar Forever*) shows the installed version in its
 header, and its **Help and bug reports** button opens this repository's address, ready to copy. Please
 [open an issue](https://github.com/paradosi/FloAspectBar-Classic/issues) for problems.
 
@@ -58,7 +58,7 @@ header, and its **Help and bug reports** button opens this repository's address,
 
 ## Installation
 
-1. Download and extract to WoW Forever's AddOns folder: `_forever_/Interface/AddOns/FloAspectBar/`
+1. Download and extract to WoW Forever's AddOns folder: `_forever_/Interface/AddOns/FloAspectBar/` (the folder keeps its old name, so your settings carry over)
 
 2. Log in on a Hunter character
 3. The aspect bar appears automatically above your action bars

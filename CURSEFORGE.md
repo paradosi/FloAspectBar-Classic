@@ -1,4 +1,4 @@
-![FloAspectBar](https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/art/logo_400.png)
+![FloAspectBar Forever](https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/art/logo_400.png)
 
 **Every hunter aspect on one small bar, made for WoW Forever.**
 
@@ -15,7 +15,7 @@ Monkey, Hawk, Cheetah, Beast, Pack and Wild as clickable buttons with cooldowns 
 - **Your order, your aspects.** Drag spells on and off the bar to reorder it; hide the aspects you don't use.
 - **Where you want it.** Automatic (above your action bars), locked, or unlocked to drag anywhere.
 - **Your look.** Background colour and opacity, borders on or off, scale from 50% to 200%.
-- **Settings panel** in the same navy-and-gold look as the author's other WoW Forever addons: Esc > Options > AddOns > FloAspectBar, or **Options...** in the bar's right-click menu.
+- **Settings panel** in the same navy-and-gold look as the author's other WoW Forever addons: Esc > Options > AddOns > FloAspectBar Forever, or **Options...** in the bar's right-click menu.
 - **Minimap button.** Left-click for settings, right-click to lock or unlock, drag to move it. It can be turned off; the addon is also in the addon compartment.
 
 ![Picking the background colour](https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/screenshots/aspect-bar-colorpicker.png)

@@ -1,5 +1,5 @@
 ## Interface: 16001
-## Title: FloAspectBar
+## Title: FloAspectBar Forever
 ## Author: paradosi-Dreamscythe
 ## Notes: Hunter aspect bar with keybindings. Originally by Floraline.
 ## Version: 1.5.0

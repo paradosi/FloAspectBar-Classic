@@ -85,7 +85,7 @@ end
 local function MinimapTooltip(tooltip)
 
 	local unlocked = FloAspectBar.settings and FloAspectBar.settings.position == "unlock";
-	tooltip:AddLine("FloAspectBar");
+	tooltip:AddLine("FloAspectBar Forever");
 	tooltip:AddLine("Left-click: settings", 1, 1, 1);
 	tooltip:AddLine(unlocked and "Right-click: lock the bar" or "Right-click: unlock the bar to move it", 1, 1, 1);
 	tooltip:AddLine("Drag: move this button", 1, 1, 1);
@@ -117,7 +117,7 @@ function FloAspectBar_InitOptions()
 
 	local panel, host, fit = W.Panel({
 		name = "FloAspectBarOptions",
-		title = "FloAspectBar",
+		title = "FloAspectBar Forever",
 		sub = "hunter aspects on one bar  ·  originally by Floraline",
 		logo = ICON,
 		version = VERSION,

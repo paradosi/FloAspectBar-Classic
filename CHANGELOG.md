@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 - New icon, in the same style as the other WoW Forever addons, in the AddOns list, the settings panel and the minimap button
+- Renamed FloAspectBar Forever. The AddOns folder is still `FloAspectBar`, so your settings carry over
 
 ## [1.5.0] - 2026-11-27
 
