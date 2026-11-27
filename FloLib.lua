@@ -23,38 +23,37 @@
 -- Prevent multi-loading
 -- Compare against this copy's own version, so a newer FloLib loaded second
 -- replaces an older one instead of the first-loaded copy always winning.
-if not FLOLIB_VERSION or FLOLIB_VERSION < 1.53 then
+if not FLOLIB_VERSION or FLOLIB_VERSION < 1.54 then
 
 	local _
 	local NUM_SPELL_SLOTS = 10;
 	local SCHOOL_COLORS = { 1.0, 0.7, 0.0 };
 
 	-- WoW Forever runs Retail's API: the flat spell functions are gone, and
-	-- C_Spell returns tables. These keep the Classic return shapes. On TBC and
-	-- Era the globals exist and are used as before. The old globals returned
-	-- nil for a nil or unknown spell; C_Spell raises a usage error instead.
-	local GetSpellInfo = GetSpellInfo or function(spell)
+	-- C_Spell returns tables. These keep the old return shapes the rest of
+	-- this file was written against. The old globals returned nil for a nil
+	-- or unknown spell; C_Spell raises a usage error instead.
+	local GetSpellInfo = function(spell)
 		if spell == nil then return; end
 		local info = C_Spell.GetSpellInfo(spell);
 		if info then
 			return info.name, nil, info.iconID, info.castTime, info.minRange, info.maxRange, info.spellID;
 		end
 	end;
-	local GetSpellCooldown = GetSpellCooldown or function(spell)
+	local GetSpellCooldown = function(spell)
 		if spell == nil then return; end
 		local cd = C_Spell.GetSpellCooldown(spell);
 		if cd then
 			return cd.startTime, cd.duration, cd.isEnabled and 1 or 0;
 		end
 	end;
-	local IsUsableSpell = IsUsableSpell or function(spell)
+	local IsUsableSpell = function(spell)
 		if spell == nil then return; end
 		return C_Spell.IsSpellUsable(spell);
 	end;
-	-- removed from every current client; Blizzard's old tooltip background
-	local TOOLTIP_BG = TOOLTIP_DEFAULT_BACKGROUND_COLOR or { r = 0.09, g = 0.09, b = 0.19 };
+	local TOOLTIP_BG = TOOLTIP_DEFAULT_BACKGROUND_COLOR;
 
-	FLOLIB_VERSION = 1.53;
+	FLOLIB_VERSION = 1.54;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -201,16 +200,14 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.53 then
 
 		cursorType, index, info, spellID = GetCursorInfo();
 
-		if cursorType ~= "spell" or (BOOKTYPE_SPELL and info ~= BOOKTYPE_SPELL) then
+		if cursorType ~= "spell" then
 			return;
 		end
 
 		local button = self;
 		local newspell;
-		if GetSpellBookItemName then
-			newspell = GetSpellBookItemName(index, info);
-		elseif spellID then
-			newspell = C_Spell.GetSpellName(spellID); -- WoW Forever
+		if spellID then
+			newspell = C_Spell.GetSpellName(spellID);
 		end
 		self = self:GetParent();
 
@@ -386,14 +383,14 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.53 then
 	-- tooltip and mis-report usability/cost for higher ranks.
 	function FloLib_GetMaxRankId(spell)
 
-		if C_Spell and C_Spell.GetSpellInfo and spell.name then
+		if spell.name then
 			local info = C_Spell.GetSpellInfo(spell.name);
 			if info and info.spellID then
 				return info.spellID;
 			end
 		end
-		-- Legacy fallback (same idiom as FloLib.xml OnDragStart): querying by
-		-- name returns the highest known rank's id as the 7th value.
+		-- No name yet: querying by the rank-1 id's name returns the highest
+		-- known rank's id as the 7th value.
 		return select(7, GetSpellInfo(GetSpellInfo(spell.id))) or spell.id;
 	end
 
@@ -436,7 +433,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.53 then
 				duration = math.max(duration, duration2);
 			end
 
-			if COOLDOWN_TYPE_NORMAL and cooldown.currentCooldownType ~= COOLDOWN_TYPE_NORMAL then
+			if cooldown.currentCooldownType ~= COOLDOWN_TYPE_NORMAL then
 				cooldown:SetEdgeTexture("Interface\\Cooldown\\edge");
 				cooldown:SetSwipeColor(0, 0, 0);
 				cooldown:SetHideCountdownNumbers(false);
@@ -761,14 +758,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.53 then
 	end
 
 	function FloLib_BarDropDown_SetOpacity()
-		local a
-		if OpacitySliderFrame then
-			a = 1.0 - OpacitySliderFrame:GetValue();
-		elseif ColorPickerFrame and ColorPickerFrame.GetColorAlpha then
-			a = ColorPickerFrame:GetColorAlpha();
-		else
-			a = 1.0;
-		end
+		local a = ColorPickerFrame:GetColorAlpha();
 		local bar = UIDropDownMenu_GetCurrentDropDown():GetParent();
 
 		bar.settings.color[4] = a;
@@ -805,33 +795,27 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.53 then
 		CloseDropDownMenus();
 	end
 
-	-- Name of the unit's i-th buff. C_UnitAuras first: UnitBuff survives only
-	-- as a Blizzard_Deprecated fallback on these clients. nil past the last
+	-- Name of the unit's i-th buff. nil past the last
 	-- buff; false for a buff whose name is a secret value (WoW Forever), which
 	-- addon code may not compare; true when the buff is secret and must not be
 	-- queried at all: GetBuffDataByIndex raises an error, not a secret value,
 	-- when tainted code asks for a secret aura.
 	local function FloLib_BuffName(unit, i)
-		if C_Secrets and C_Secrets.ShouldUnitAuraIndexBeSecret
-				and C_Secrets.ShouldUnitAuraIndexBeSecret(unit, i, "HELPFUL") then
+		if C_Secrets.ShouldUnitAuraIndexBeSecret(unit, i, "HELPFUL") then
 			return true;
 		end
-		if C_UnitAuras and C_UnitAuras.GetBuffDataByIndex then
-			local aura = C_UnitAuras.GetBuffDataByIndex(unit, i);
-			if not aura then
-				return nil;
-			end
-			return canaccessvalue(aura.name) and aura.name or false;
-		else
-			return (UnitBuff(unit, i));
+		local aura = C_UnitAuras.GetBuffDataByIndex(unit, i);
+		if not aura then
+			return nil;
 		end
+		return canaccessvalue(aura.name) and aura.name or false;
 	end
 
 	-- true or false, or nil when the game is hiding auras from addons (WoW
 	-- Forever, in restricted combat) and the answer cannot be known.
 	function FloLib_UnitHasBuff(unit, name)
 
-		if C_Secrets and C_Secrets.ShouldAurasBeSecret and C_Secrets.ShouldAurasBeSecret() then
+		if C_Secrets.ShouldAurasBeSecret() then
 			return nil;
 		end
 

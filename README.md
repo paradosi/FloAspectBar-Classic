@@ -4,15 +4,15 @@
 
 <h1 align="center" style="color:#AAD372;">FloAspectBar — Classic</h1>
 
-A Hunter aspect bar addon for **WoW Classic Era**, **TBC Classic Anniversary** and **WoW Forever**. Displays Hunter aspects as clickable buttons with cooldown tracking and keybinding support.
+A Hunter aspect bar addon for **WoW Forever**. Displays Hunter aspects as clickable buttons with cooldown tracking and keybinding support.
 
 Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-Dreamscythe**.
 
-![Classic Era: 11509](https://img.shields.io/badge/Classic_Era-11509-yellow) ![TBC Anniversary: 20506](https://img.shields.io/badge/TBC_Anniversary-20506-blue) ![WoW Forever: 16001](https://img.shields.io/badge/WoW_Forever-16001-purple)
+![WoW Forever: 16001](https://img.shields.io/badge/WoW_Forever-16001-purple)
 
 ## Features
 
-- **Hunter Aspects** — Monkey, Hawk, Cheetah, Beast, Pack, Wild (+ Viper on TBC)
+- **Hunter Aspects** — Monkey, Hawk, Cheetah, Beast, Pack, Wild
 - **Click to cast** — Left-click any aspect to activate it
 - **Tooltip support** — Hover for full spell details
 - **Keybinding support** — Uses WoW's Shapeshifting keybindings (Key Bindings > Action Bar > Shapeshifting)
@@ -52,20 +52,19 @@ Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-D
 
 ## Installation
 
-1. Download and extract to your AddOns folder:
-
-   | Version | AddOns Path | TOC File |
-   |---------|-------------|----------|
-   | Classic Era | `_classic_era_/Interface/AddOns/FloAspectBar/` | `FloAspectBar_Vanilla.toc` |
-   | TBC Anniversary | `_anniversary_/Interface/AddOns/FloAspectBar/` | `FloAspectBar.toc` |
-   | WoW Forever | `_forever_/Interface/AddOns/FloAspectBar/` | `FloAspectBar_Camelot.toc` |
+1. Download and extract to WoW Forever's AddOns folder: `_forever_/Interface/AddOns/FloAspectBar/`
 
 2. Log in on a Hunter character
 3. The aspect bar appears automatically above your action bars
 
 ## Compatibility
 
-This addon is designed for **Classic Era**, **TBC Classic** and **WoW Forever** only. It does not support Retail WoW — Hunter aspects were removed in Mists of Pandaria.
+**WoW Forever** (Interface 16001) only.
+
+> [!IMPORTANT]
+> **WoW Forever only from the next release.** Version 1.3.0 is the last one for Classic Era and
+> TBC Anniversary. It stays downloadable on CurseForge, Wago and GitHub Releases, but gets no
+> further updates.
 
 ## License
 

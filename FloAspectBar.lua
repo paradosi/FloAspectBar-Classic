@@ -18,8 +18,8 @@ local VERSION = "1.3.0"
 
 local _
 local SHOW_WELCOME = true;
--- WoW Forever renamed the main action bar frame
-local MainMenuBar = MainMenuBar or MainActionBar;
+-- WoW Forever's main action bar frame (MainMenuBar on the old clients)
+local MainMenuBar = MainActionBar;
 local FLOASPECTBAR_BARSETTINGS_DEFAULT = { position = "auto", buttonsOrder = {}, color = { 0, 0.49, 0, 0.7 }, hiddenSpells = {} };
 local FLOASPECTBAR_OPTIONS_DEFAULT = { [1] = { scale = 1, borders = true, barSettings = FLOASPECTBAR_BARSETTINGS_DEFAULT }, active = 1 };
 FLOASPECTBAR_OPTIONS = FLOASPECTBAR_OPTIONS_DEFAULT;
@@ -78,14 +78,10 @@ function FloAspectBar_OnLoad(self)
 	self:RegisterEvent("SPELL_UPDATE_COOLDOWN");
 	self:RegisterEvent("ACTIONBAR_UPDATE_USABLE");
 	self:RegisterEvent("UNIT_AURA");
-	if C_Secrets then
-		self:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED");
-	end
+	self:RegisterEvent("ADDON_RESTRICTION_STATE_CHANGED");
 	self:RegisterEvent("UPDATE_BINDINGS");
 	self:RegisterEvent("PLAYER_ENTERING_WORLD");
-	if not C_EventUtils or C_EventUtils.IsEventValid("EDIT_MODE_LAYOUTS_UPDATED") then
-		self:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED");
-	end
+	self:RegisterEvent("EDIT_MODE_LAYOUTS_UPDATED");
 	self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
 end
 
@@ -101,12 +97,6 @@ function FloAspectBar_OnEvent(self, event, arg1, ...)
 	elseif event == "ADDON_LOADED" and arg1 == "FloAspectBar" then
 		FloAspectBar_CheckTalentGroup(FLOASPECTBAR_OPTIONS.active);
 
-		-- Hook the UIParent_ManageFramePositions function
-		-- Forever (Retail's UI) has no UIParent_ManageFramePositions; Blizzard's
-		-- edit-mode layout places its bars there.
-		if UIParent_ManageFramePositions then
-			hooksecurefunc("UIParent_ManageFramePositions", FloAspectBar_UpdatePosition);
-		end
 		FloLib_UpdateBindings(self, "SHAPESHIFT");
 		FloAspectBar_InitOptions();
 
@@ -120,8 +110,7 @@ function FloAspectBar_OnEvent(self, event, arg1, ...)
 
 	elseif event == "PLAYER_ENTERING_WORLD" or event == "EDIT_MODE_LAYOUTS_UPDATED" then
 		-- ADDON_LOADED placed the bar before Blizzard (and any action bar addon)
-		-- had laid out the main bars; Forever has no UIParent_ManageFramePositions
-		-- to re-run it, so place it again once the layout is final.
+		-- had laid out the main bars, so place it again once the layout is final.
 		FloAspectBar_UpdatePosition();
 
 	elseif event == "UNIT_AURA" then
@@ -373,7 +362,7 @@ function FloAspectBar_UpdatePosition()
 	-- a hidden frame or clearing its points, which leaves IsShown() true:
 	-- anchoring to it then parked this bar off screen, or left it with no
 	-- position at all, and the bar simply vanished.
-	local mainBarUsable = MainMenuBar and MainMenuBar:IsVisible() and MainMenuBar:GetLeft() ~= nil;
+	local mainBarUsable = MainMenuBar:IsVisible() and MainMenuBar:GetLeft() ~= nil;
 
 	if not mainBarUsable then
 		anchorFrame = UIParent;
@@ -381,10 +370,10 @@ function FloAspectBar_UpdatePosition()
 	else
 		anchorFrame = MainMenuBar;
 		xOffset = 326;
-		if MultiBarBottomLeft and MultiBarBottomLeft:IsShown() then
+		if MultiBarBottomLeft:IsShown() then
 			yOffset = yOffset + 50;
 		end
-		if MultiBarBottomRight and MultiBarBottomRight:IsShown() then
+		if MultiBarBottomRight:IsShown() then
 			yOffset = yOffset + 50;
 		end
 	end

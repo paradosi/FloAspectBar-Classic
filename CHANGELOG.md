@@ -4,6 +4,11 @@ All notable changes to FloAspectBar-Classic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Changed
+- WoW Forever only. 1.3.0 was the last version for Classic Era and TBC Anniversary, and it stays available for download
+
 ## [1.3.0] - 2026-11-23
 
 ### Added
