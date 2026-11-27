@@ -5,7 +5,7 @@
 -- =============================================================================
 -- FloLib -- shared button/bar engine, VENDORED SEPARATELY INTO BOTH ADDONS.
 --
--- FloAspectBar-Classic/FloLib.lua and FloTotemBar-Classic/FloLib.lua are two
+-- FloAspectBar-Forever/FloLib.lua and FloTotemBar-Forever/FloLib.lua are two
 -- copies of this file. They are NOT symlinked and nothing syncs them; they had
 -- silently diverged once already (FloAspectBar was left on 1.44 without
 -- FloLib_GetMaxRankId, so aspect tooltips showed rank 1). As of FLOLIB_VERSION

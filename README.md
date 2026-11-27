@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/art/logo_400.png" width="200" alt="FloAspectBar Forever">
+  <img src="https://raw.githubusercontent.com/paradosi/FloAspectBar-Forever/main/media/art/logo_400.png" width="200" alt="FloAspectBar Forever">
 </p>
 
 <h1 align="center">FloAspectBar Forever</h1>
@@ -27,17 +27,17 @@ Originally created by **Floraline** (MPL 2.0). Maintained for WoW Forever by **p
 
 ## Screenshots
 
-![Aspect Bar Tooltip](https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/screenshots/aspect-bar-tooltip.png)
+![Aspect Bar Tooltip](https://raw.githubusercontent.com/paradosi/FloAspectBar-Forever/main/media/screenshots/aspect-bar-tooltip.png)
 
-![Aspect Bar Options](https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/screenshots/aspect-bar-options.png)
+![Aspect Bar Options](https://raw.githubusercontent.com/paradosi/FloAspectBar-Forever/main/media/screenshots/aspect-bar-options.png)
 
-![Aspect Bar Color Picker](https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/screenshots/aspect-bar-colorpicker.png)
+![Aspect Bar Color Picker](https://raw.githubusercontent.com/paradosi/FloAspectBar-Forever/main/media/screenshots/aspect-bar-colorpicker.png)
 
 ## Help and bug reports
 
 The settings panel (*Esc > Options > AddOns > FloAspectBar Forever*) shows the installed version in its
 header, and its **Help and bug reports** button opens this repository's address, ready to copy. Please
-[open an issue](https://github.com/paradosi/FloAspectBar-Classic/issues) for problems.
+[open an issue](https://github.com/paradosi/FloAspectBar-Forever/issues) for problems.
 
 ## Slash Commands
 

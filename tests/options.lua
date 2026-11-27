@@ -8,7 +8,7 @@
 -- setters are recorded rather than run. Widget stubs come from
 -- ForeverQuestItemBar's tests/smoke.lua.
 --
---   cd FloAspectBar-Classic && lua5.1 tests/options.lua
+--   cd FloAspectBar-Forever && lua5.1 tests/options.lua
 
 local failures = 0
 local function check(cond, msg)
@@ -143,7 +143,7 @@ function methods.SetLabel(self, t) self.label.text = t:upper() end
 C_AddOns = {
     GetAddOnMetadata = function(_, field)
         if field == "Version" then return "9.9.9" end
-        if field == "X-Website" then return "https://github.com/paradosi/FloAspectBar-Classic" end
+        if field == "X-Website" then return "https://github.com/paradosi/FloAspectBar-Forever" end
     end,
 }
 local opened
@@ -249,7 +249,7 @@ checks["Spell 5118"]:Click()
 check(Last()[1] == "ToggleSpell" and Last()[2] == 4, "the aspect after it still toggles its own position (4)")
 buttons["HELP AND BUG REPORTS"]:Click()
 local dialog = FloAspectBarCopyDialog
-check(dialog and dialog.shown and dialog.box.text == "https://github.com/paradosi/FloAspectBar-Classic", "help opens the link")
+check(dialog and dialog.shown and dialog.box.text == "https://github.com/paradosi/FloAspectBar-Forever", "help opens the link")
 
 print(failures == 0 and "\nall passed" or ("\n" .. failures .. " failed"))
 os.exit(failures == 0 and 0 or 1)
