@@ -37,7 +37,7 @@ Monkey, Hawk, Cheetah, Beast, Pack and Wild as clickable buttons with cooldowns 
 
 ## Works well with
 
-**[FloTotemBar](https://github.com/paradosi/FloTotemBar-Classic)**: its trap bar docks to the right of the aspect bar.
+**[FloTotemBar Forever](https://github.com/paradosi/FloTotemBar-Classic)**: its trap bar docks to the right of the aspect bar.
 
 ## Help and bug reports
 
