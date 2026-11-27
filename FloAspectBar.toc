@@ -4,7 +4,7 @@
 ## Notes: Hunter aspect bar with keybindings. Originally by Floraline.
 ## Version: 1.5.0
 ## Category-enUS: Hunter
-## IconTexture: Interface\AddOns\FloAspectBar\media\textures\troll_hunter_64
+## IconTexture: Interface\AddOns\FloAspectBar\media\textures\logo_64
 ## AddonCompartmentFunc: FloAspectBar_OnMinimapClick
 ## X-Website: https://github.com/paradosi/FloAspectBar-Classic
 ## X-Wago-ID: EGPeBjN1

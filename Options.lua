@@ -32,7 +32,7 @@ function FloAspectBar_ShowSupportLink()
 end
 
 local MINIMAP_DEFAULT_ANGLE = 200;
-local ICON = "Interface\\AddOns\\FloAspectBar\\media\\textures\\troll_hunter_64";
+local ICON = "Interface\\AddOns\\FloAspectBar\\media\\textures\\logo_64";
 
 local function Say(msg)
 	DEFAULT_CHAT_FRAME:AddMessage("FloAspectBar: "..msg);

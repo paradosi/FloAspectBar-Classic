@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/art/troll_hunter_400.png" width="200" alt="FloAspectBar">
+  <img src="https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/art/logo_400.png" width="200" alt="FloAspectBar">
 </p>
 
 <h1 align="center" style="color:#AAD372;">FloAspectBar — Classic</h1>

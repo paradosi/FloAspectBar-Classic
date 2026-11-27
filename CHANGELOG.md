@@ -4,6 +4,11 @@ All notable changes to FloAspectBar-Classic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Changed
+- New icon, in the same style as the other WoW Forever addons, in the AddOns list, the settings panel and the minimap button
+
 ## [1.5.0] - 2026-11-27
 
 ### Changed
