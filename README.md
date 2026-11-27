@@ -67,10 +67,9 @@ header, and its **Help and bug reports** button opens this repository's address,
 
 **WoW Forever** (Interface 16001) only.
 
-> [!IMPORTANT]
-> **WoW Forever only from the next release.** Version 1.3.0 is the last one for Classic Era and
-> TBC Anniversary. It stays downloadable on CurseForge, Wago and GitHub Releases, but gets no
-> further updates.
+> [!NOTE]
+> Version 1.3.0 was the last one for Classic Era and TBC Anniversary. It stays downloadable on
+> CurseForge, Wago and GitHub Releases, but gets no further updates.
 
 ## License
 
