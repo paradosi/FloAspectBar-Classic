@@ -10,7 +10,7 @@
 -- both .toc files on every release. It silently drifted to 1.1.0 while the
 -- TOCs said 1.2.0, so the addon announced the wrong version for two releases.
 -- FloTotemBar has the same hand-maintained string; check both.
-local VERSION = "1.3.0"
+local VERSION = "1.4.0"
 
 -------------------------------------------------------------------------------
 -- Variables

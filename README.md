@@ -33,6 +33,12 @@ Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-D
 
 ![Aspect Bar Color Picker](https://raw.githubusercontent.com/paradosi/FloAspectBar-Classic/main/media/screenshots/aspect-bar-colorpicker.png)
 
+## Help and bug reports
+
+The bottom of the settings panel (*Esc > Options > AddOns > FloAspectBar*) shows the installed version
+and a **GitHub link** button with this repository's address ready to copy. Please
+[open an issue](https://github.com/paradosi/FloAspectBar-Classic/issues) for problems.
+
 ## Slash Commands
 
 | Command | Description |

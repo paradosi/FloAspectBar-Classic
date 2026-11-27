@@ -15,6 +15,41 @@
 local category;
 local minimapButton;
 
+-- Both from the TOC, so `wowdev bump` keeps the version current here.
+local VERSION = C_AddOns.GetAddOnMetadata("FloAspectBar", "Version") or "?";
+local WEBSITE = C_AddOns.GetAddOnMetadata("FloAspectBar", "X-Website");
+
+-- Addons can't open a browser, so the support link is shown selected in an
+-- edit box for Ctrl+C. Typing in the box puts the link back.
+StaticPopupDialogs["FLOASPECTBAR_SUPPORT_LINK"] = {
+	text = "FloAspectBar on GitHub: report a problem or ask a question.\nPress Ctrl+C to copy the link.",
+	button1 = CLOSE,
+	hasEditBox = true,
+	editBoxWidth = 340,
+	OnShow = function(dialog, url)
+		local editBox = dialog:GetEditBox();
+		editBox:SetText(url);
+		editBox:HighlightText();
+		editBox:SetFocus();
+	end,
+	EditBoxOnTextChanged = function(editBox, url)
+		if editBox:GetText() ~= url then
+			editBox:SetText(url);
+			editBox:HighlightText();
+		end
+	end,
+	EditBoxOnEnterPressed = function(editBox) editBox:GetParent():Hide(); end,
+	timeout = 0,
+	whileDead = true,
+	hideOnEscape = true,
+};
+
+function FloAspectBar_ShowSupportLink()
+	if WEBSITE then
+		StaticPopup_Show("FLOASPECTBAR_SUPPORT_LINK", nil, nil, WEBSITE);
+	end
+end
+
 local MINIMAP_DEFAULT_ANGLE = 200;
 local ICON = "Interface\\AddOns\\FloAspectBar\\media\\textures\\troll_hunter_64";
 
@@ -168,6 +203,15 @@ function FloAspectBar_InitOptions()
 	layout:AddInitializer(CreateSettingsButtonInitializer("Reset all settings", "Reset", function()
 		FloLib_ResetAddon("FloAspectBar");
 	end, "Put every FloAspectBar setting back to its default. The interface reloads.", true));
+
+	---- About
+
+	Header("Version "..VERSION);
+	if WEBSITE then
+		layout:AddInitializer(CreateSettingsButtonInitializer("Help and bug reports", "GitHub link",
+			FloAspectBar_ShowSupportLink,
+			"Show the link to the addon's GitHub page, where you can report a problem or ask a question.", true));
+	end
 
 	Settings.RegisterAddOnCategory(category);
 end
