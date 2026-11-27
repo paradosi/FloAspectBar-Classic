@@ -22,7 +22,7 @@ Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-D
 - **Show/hide borders** — Toggle bar borders via right-click menu
 - **Per-spell visibility** — Hide aspects you don't use
 - **Scalable** — Adjust bar scale in the settings or via slash command
-- **Settings panel** — Esc > Options > AddOns > FloAspectBar, or **Options...** in the bar's right-click menu
+- **Settings panel** — in the same look as the other WoW Forever addons (navy, gold, two columns). Esc > Options > AddOns > FloAspectBar, or **Options...** in the bar's right-click menu
 - **Minimap button** — Left-click for settings, right-click to lock/unlock the bar, drag to move it; can be turned off (WoW Forever also lists the addon in the addon compartment)
 
 ## Screenshots
@@ -35,8 +35,8 @@ Originally created by **Floraline** (MPL 2.0). Ported to Classic by **paradosi-D
 
 ## Help and bug reports
 
-The bottom of the settings panel (*Esc > Options > AddOns > FloAspectBar*) shows the installed version
-and a **GitHub link** button with this repository's address ready to copy. Please
+The settings panel (*Esc > Options > AddOns > FloAspectBar*) shows the installed version in its
+header, and its **Help and bug reports** button opens this repository's address, ready to copy. Please
 [open an issue](https://github.com/paradosi/FloAspectBar-Classic/issues) for problems.
 
 ## Slash Commands
@@ -75,3 +75,7 @@ and a **GitHub link** button with this repository's address ready to copy. Pleas
 ## License
 
 [Mozilla Public License 2.0](http://mozilla.org/MPL/2.0/)
+
+The fonts in `media/fonts` (Oswald, JetBrains Mono) are under the SIL Open Font License;
+their licence texts are beside them. `Theme.lua` and `Widgets.lua` are shared, unchanged, with
+the author's other WoW Forever addons.

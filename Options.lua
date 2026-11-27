@@ -6,11 +6,16 @@
 -- Settings panel (Esc > Options > AddOns > FloAspectBar), minimap button and
 -- addon compartment entry (WoW Forever). Not upstream code (added in 1.3.0).
 --
--- Every control is a proxy setting: it reads the live options and writes
--- through the same functions the slash commands and the bar menu use, so the
--- three can never disagree. Anything that moves, scales or rebuilds the bar
--- touches secure buttons and is refused in combat.
+-- The panel is in wowdb.dev's look (Theme.lua and Widgets.lua, shared with the
+-- other Forever addons; 2026-11-27). Every control writes through the same
+-- functions the slash commands and the bar menu use, so the three can never
+-- disagree, and the panel reads the live options each time it opens. Anything
+-- that moves, scales or rebuilds the bar touches secure buttons and is refused
+-- in combat; the control then springs back.
 -------------------------------------------------------------------------------
+
+local _, ns = ...;
+local W = ns.W;
 
 local category;
 local minimapButton;
@@ -19,34 +24,10 @@ local minimapButton;
 local VERSION = C_AddOns.GetAddOnMetadata("FloAspectBar", "Version") or "?";
 local WEBSITE = C_AddOns.GetAddOnMetadata("FloAspectBar", "X-Website");
 
--- Addons can't open a browser, so the support link is shown selected in an
--- edit box for Ctrl+C. Typing in the box puts the link back.
-StaticPopupDialogs["FLOASPECTBAR_SUPPORT_LINK"] = {
-	text = "FloAspectBar on GitHub: report a problem or ask a question.\nPress Ctrl+C to copy the link.",
-	button1 = CLOSE,
-	hasEditBox = true,
-	editBoxWidth = 340,
-	OnShow = function(dialog, url)
-		local editBox = dialog:GetEditBox();
-		editBox:SetText(url);
-		editBox:HighlightText();
-		editBox:SetFocus();
-	end,
-	EditBoxOnTextChanged = function(editBox, url)
-		if editBox:GetText() ~= url then
-			editBox:SetText(url);
-			editBox:HighlightText();
-		end
-	end,
-	EditBoxOnEnterPressed = function(editBox) editBox:GetParent():Hide(); end,
-	timeout = 0,
-	whileDead = true,
-	hideOnEscape = true,
-};
-
+-- Addons can't open a browser: the link opens selected, for Ctrl+C
 function FloAspectBar_ShowSupportLink()
 	if WEBSITE then
-		StaticPopup_Show("FLOASPECTBAR_SUPPORT_LINK", nil, nil, WEBSITE);
+		W.CopyDialog("Help and bug reports", WEBSITE);
 	end
 end
 
@@ -130,88 +111,132 @@ function FloAspectBar_InitOptions()
 			ICON, FloAspectBar_OnMinimapClick, MinimapTooltip);
 	end
 
-	if category or not (Settings and Settings.RegisterVerticalLayoutCategory) then
+	if category then
 		return;
 	end
-	local layout;
-	category, layout = Settings.RegisterVerticalLayoutCategory("FloAspectBar");
 
-	-- Setting names are global to the Settings registry: keep the prefix
-	local function Proxy(key, varType, name, default, get, set)
-		return Settings.RegisterProxySetting(category, "FloAspectBar_"..key, varType, name, default, get, set);
+	local panel, host, fit = W.Panel({
+		name = "FloAspectBarOptions",
+		title = "FloAspectBar",
+		sub = "hunter aspects on one bar  ·  originally by Floraline",
+		logo = ICON,
+		version = VERSION,
+	});
+	local COL_W = W.COL_W;
+
+	local function ColumnTop(x)
+		local f = CreateFrame("Frame", nil, host);
+		f:SetSize(1, 1);
+		f:SetPoint("TOPLEFT", host, "TOPLEFT", x, -8);
+		return f;
 	end
-	local function Header(text)
-		layout:AddInitializer(CreateSettingsListSectionHeaderInitializer(text));
-	end
+	local left, right = ColumnTop(18), ColumnTop(18 + COL_W + 40);
+	local Sync;
 
-	---- Bar
+	---- Left column: the bar
 
-	Header("Bar");
-
-	local function PositionChoices()
-		local list = Settings.CreateControlTextContainer();
-		list:Add("auto", FLOLIB_POSITIONS.auto);
-		list:Add("lock", FLOLIB_POSITIONS.lock);
-		list:Add("unlock", FLOLIB_POSITIONS.unlock);
-		return list:GetData();
-	end
-	Settings.CreateDropdown(category, Proxy("position", "string", FLOLIB_POSITION, "auto",
-			function() return bar.settings.position; end,
-			function(value) FloAspectBar_SetPosition(nil, bar, value); end),
-		PositionChoices,
-		"Automatic places the bar above your action bars. Unlocked shows its border so you can drag it; Locked keeps it where you left it.");
-
-	local scaleOptions = Settings.CreateSliderOptions(0.5, 2, 0.05);
-	scaleOptions:SetLabelFormatter(MinimalSliderWithSteppersMixin.Label.Right, function(value)
-		return string.format("%d%%", math.floor(value * 100 + 0.5));
+	local barSec = W.Section(host, left, 0, "Bar");
+	local position = W.Segment(host, barSec, -12, {
+		{ "auto", FLOLIB_POSITIONS.auto }, { "lock", FLOLIB_POSITIONS.lock }, { "unlock", FLOLIB_POSITIONS.unlock },
+	}, function(value)
+		FloAspectBar_SetPosition(nil, bar, value);
+		Sync();
 	end);
-	Settings.CreateSlider(category, Proxy("scale", "number", "Scale", 1,
-			function() return bar.globalSettings.scale; end,
-			function(value) if NotInCombat() then FloAspectBar_SetScale(value); end end),
-		scaleOptions, "Size of the bar.");
+	local positionNote = W.Note(host, position.first, -6, "auto sits above your action bars; unlocked can be dragged");
 
-	Settings.CreateCheckbox(category, Proxy("borders", "boolean", FLOLIB_SHOWBORDERS, true,
-			function() return bar.globalSettings.borders and true or false; end,
-			function(value) FloAspectBar_SetBorders(nil, value); end),
-		"Draw a border and background behind the bar. An unlocked bar always shows one.");
+	local scale = W.Slider(host, positionNote, -14, "Scale", 50, 200, 5, 5, "%");
+	scale.onChange = function(value)
+		if NotInCombat() then
+			FloAspectBar_SetScale(value / 100);
+		end
+		Sync();
+	end;
 
-	Settings.CreateCheckbox(category, Proxy("minimap", "boolean", "Show minimap button", true,
-			function() return not FLOASPECTBAR_OPTIONS.minimap.hide; end,
-			function(value) FloAspectBar_SetMinimapButton(value); end),
-		"Left-click the button for these settings, right-click to lock or unlock the bar, drag it to move it around the minimap. /fab minimap also turns it on and off.");
+	local borders = W.Check(host, scale, -12, FLOLIB_SHOWBORDERS);
+	borders.onChange = function(value)
+		FloAspectBar_SetBorders(nil, value);
+		Sync();
+	end;
+	local minimap = W.Check(host, borders, -6, "Show minimap button");
+	minimap.onChange = function(value)
+		FloAspectBar_SetMinimapButton(value);
+	end;
+	local minimapNote = W.Note(host, minimap, -4, "left-click: settings  ·  right-click: lock or unlock");
 
-	---- Aspects: the same switches as Spells in the bar's right-click menu
+	---- Right column: which aspects the bar shows (the bar menu's Spells)
 
-	Header("Aspects");
-
+	local aspectsSec = W.Section(host, right, 0, "Aspects");
+	local aspectChecks = {};
+	local last = aspectsSec;
 	for i, spell in ipairs(bar.availableSpells) do
-		local name = spell.name or (C_Spell and C_Spell.GetSpellName and C_Spell.GetSpellName(spell.id)) or ("Spell "..spell.id);
-		Settings.CreateCheckbox(category, Proxy("spell"..spell.id, "boolean", name, true,
-				function() return not bar.settings.hiddenSpells[i]; end,
-				function(value)
-					local shown = not bar.settings.hiddenSpells[i];
-					if shown ~= value and NotInCombat() then
-						FloLib_ToggleSpell(nil, bar, i);
-					end
-				end),
-			"Show this aspect on the bar. Aspects you have not learned yet appear once you learn them.");
+		local name = spell.name or C_Spell.GetSpellName(spell.id) or ("Spell "..spell.id);
+		local check = W.Check(host, last, i == 1 and -10 or -6, name);
+		check.onChange = function(value)
+			local shown = not bar.settings.hiddenSpells[i];
+			if shown ~= value and NotInCombat() then
+				FloLib_ToggleSpell(nil, bar, i);
+			end
+			Sync();
+		end;
+		aspectChecks[i] = check;
+		last = check;
 	end
+	local aspectsNote = W.Note(host, last, -6, "aspects you learn later appear on the bar by themselves");
 
-	---- Reset
+	---- Footer: reset, help, the slash command
 
-	Header("Reset");
-	layout:AddInitializer(CreateSettingsButtonInitializer("Reset all settings", "Reset", function()
-		FloLib_ResetAddon("FloAspectBar");
-	end, "Put every FloAspectBar setting back to its default. The interface reloads.", true));
-
-	---- About
-
-	Header("Version "..VERSION);
-	if WEBSITE then
-		layout:AddInitializer(CreateSettingsButtonInitializer("Help and bug reports", "GitHub link",
-			FloAspectBar_ShowSupportLink,
-			"Show the link to the addon's GitHub page, where you can report a problem or ask a question.", true));
+	-- A hairline under whichever column ends lower (measured on show)
+	local foot = host:CreateTexture(nil, "BORDER");
+	foot:SetColorTexture(1, 1, 1, 0.06);
+	foot:SetHeight(1);
+	foot:SetWidth(COL_W * 2 + 40);
+	local function PlaceFoot()
+		local a, b = minimapNote:GetBottom(), aspectsNote:GetBottom();
+		local lower = (a and b and a < b) and minimapNote or aspectsNote;
+		foot:ClearAllPoints();
+		foot:SetPoint("TOP", lower, "BOTTOM", 0, -18);
+		foot:SetPoint("LEFT", host, "LEFT", 18, 0);
 	end
+	PlaceFoot();
 
+	local reset = W.Button(host, "Reset all settings", 150);
+	reset:SetPoint("TOPLEFT", foot, "BOTTOMLEFT", 0, -12);
+	reset:SetScript("OnClick", function(self)
+		-- Two clicks: it wipes every setting and reloads the interface
+		if self.armed then
+			FloLib_ResetAddon("FloAspectBar");
+			return;
+		end
+		self.armed = true;
+		self:SetLabel("Click again to reset");
+		C_Timer.After(3, function()
+			self.armed = nil;
+			self:SetLabel("Reset all settings");
+		end);
+	end);
+
+	local help = W.Button(host, "Help and bug reports", 170);
+	help:SetPoint("LEFT", reset, "RIGHT", 10, 0);
+	help:SetScript("OnClick", FloAspectBar_ShowSupportLink);
+	help:SetShown(WEBSITE ~= nil);
+
+	local hint = W.Note(host, reset, -10, "/fab for commands  ·  right-click the bar for its menu");
+
+	Sync = function()
+		position:Set(bar.settings.position);
+		scale:SetValue(math.floor(bar.globalSettings.scale * 100 + 0.5));
+		borders:SetChecked(bar.globalSettings.borders);
+		minimap:SetChecked(not FLOASPECTBAR_OPTIONS.minimap.hide);
+		for i, check in ipairs(aspectChecks) do
+			check:SetChecked(not bar.settings.hiddenSpells[i]);
+		end
+	end;
+	panel:SetScript("OnShow", function()
+		Sync();
+		PlaceFoot();
+		fit(hint);
+	end);
+
+	category = Settings.RegisterCanvasLayoutCategory(panel, panel.name);
 	Settings.RegisterAddOnCategory(category);
 end

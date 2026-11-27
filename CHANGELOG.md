@@ -4,6 +4,12 @@ All notable changes to FloAspectBar-Classic will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Changed
+- New look for the settings panel, in the same style as the other WoW Forever addons: navy panel, gold accents, two columns. Every setting is still there. Reset all settings now asks for a second click, since it reloads the interface
+- The GitHub link opens in a matching window, selected and ready to copy
+
 ## [1.4.0] - 2026-11-27
 
 ### Added
