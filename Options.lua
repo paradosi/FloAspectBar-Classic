@@ -169,17 +169,19 @@ function FloAspectBar_InitOptions()
 	local aspectChecks = {};
 	local last = aspectsSec;
 	for i, spell in ipairs(bar.availableSpells) do
-		local name = spell.name or C_Spell.GetSpellName(spell.id) or ("Spell "..spell.id);
-		local check = W.Check(host, last, i == 1 and -10 or -6, name);
-		check.onChange = function(value)
-			local shown = not bar.settings.hiddenSpells[i];
-			if shown ~= value and NotInCombat() then
-				FloLib_ToggleSpell(nil, bar, i);
-			end
-			Sync();
-		end;
-		aspectChecks[i] = check;
-		last = check;
+		if not spell.notOnForever then  -- TBC spells (data.lua)
+			local name = spell.name or C_Spell.GetSpellName(spell.id) or ("Spell "..spell.id);
+			local check = W.Check(host, last, last == aspectsSec and -10 or -6, name);
+			check.onChange = function(value)
+				local shown = not bar.settings.hiddenSpells[i];
+				if shown ~= value and NotInCombat() then
+					FloLib_ToggleSpell(nil, bar, i);
+				end
+				Sync();
+			end;
+			aspectChecks[i] = check;
+			last = check;
+		end
 	end
 	local aspectsNote = W.Note(host, last, -6, "aspects you learn later appear on the bar by themselves");
 
@@ -220,14 +222,14 @@ function FloAspectBar_InitOptions()
 	help:SetScript("OnClick", FloAspectBar_ShowSupportLink);
 	help:SetShown(WEBSITE ~= nil);
 
-	local hint = W.Note(host, reset, -10, "/fab for commands  ·  right-click the bar for its menu");
+	local hint = W.Note(host, reset, -10, "/fab for commands  ·  right-click the bar for its menu", COL_W * 2 + 40);
 
 	Sync = function()
 		position:Set(bar.settings.position);
 		scale:SetValue(math.floor(bar.globalSettings.scale * 100 + 0.5));
 		borders:SetChecked(bar.globalSettings.borders);
 		minimap:SetChecked(not FLOASPECTBAR_OPTIONS.minimap.hide);
-		for i, check in ipairs(aspectChecks) do
+		for i, check in pairs(aspectChecks) do
 			check:SetChecked(not bar.settings.hiddenSpells[i]);
 		end
 	end;

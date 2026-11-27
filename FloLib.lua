@@ -23,7 +23,7 @@
 -- Prevent multi-loading
 -- Compare against this copy's own version, so a newer FloLib loaded second
 -- replaces an older one instead of the first-loaded copy always winning.
-if not FLOLIB_VERSION or FLOLIB_VERSION < 1.54 then
+if not FLOLIB_VERSION or FLOLIB_VERSION < 1.55 then
 
 	local _
 	local NUM_SPELL_SLOTS = 10;
@@ -53,7 +53,7 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.54 then
 	end;
 	local TOOLTIP_BG = TOOLTIP_DEFAULT_BACKGROUND_COLOR;
 
-	FLOLIB_VERSION = 1.54;
+	FLOLIB_VERSION = 1.55;
 
 	FLOLIB_ACTIVATE_SPEC = nil; -- retail spell 200749, not available on Classic
 
@@ -637,18 +637,21 @@ if not FLOLIB_VERSION or FLOLIB_VERSION < 1.54 then
 			elseif UIDROPDOWNMENU_MENU_VALUE == "spells" then
 
 				-- Add the possible values to the menu
+				-- (skipping the TBC spells WoW Forever doesn't have: data.lua)
 				for i, spell in ipairs(bar.availableSpells) do
-					info = UIDropDownMenu_CreateInfo();
-					info.text = spell.name;
-					info.value = i;
-					info.func = FloLib_ToggleSpell;
-					info.arg1 = bar;
-					info.arg2 = i;
+					if not spell.notOnForever then
+						info = UIDropDownMenu_CreateInfo();
+						info.text = spell.name;
+						info.value = i;
+						info.func = FloLib_ToggleSpell;
+						info.arg1 = bar;
+						info.arg2 = i;
 
-					if not bar.settings.hiddenSpells[i] then
-						info.checked = 1;
+						if not bar.settings.hiddenSpells[i] then
+							info.checked = 1;
+						end
+						UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL);
 					end
-					UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL);
 				end
 
 			end

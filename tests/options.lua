@@ -168,7 +168,7 @@ FloAspectBar = {
     settings = { position = "auto", hiddenSpells = {} },
     globalSettings = { scale = 1, borders = true },
     availableSpells = { { id = 13163, name = "Aspect of the Monkey" }, { id = 13165, name = "Aspect of the Hawk" },
-                        { id = 5118 } },
+                        { id = 34074, name = "Aspect of the Viper", notOnForever = true }, { id = 5118 } },
 }
 FLOASPECTBAR_OPTIONS = {}
 function FloAspectBar_SetPosition(_, bar, mode) bar.settings.position = mode; Record("SetPosition")(mode) end
@@ -213,6 +213,7 @@ check(checks["Show borders"] and checks["Show borders"].checked, "borders shown 
 check(checks["Show minimap button"] and checks["Show minimap button"].checked, "minimap button shown as on")
 check(checks["Aspect of the Hawk"] and checks["Aspect of the Hawk"].checked, "aspects listed and ticked")
 check(checks["Spell 5118"], "an aspect without a cached name falls back to C_Spell")
+check(checks["Aspect of the Viper"] == nil, "a TBC aspect (notOnForever) is not listed")
 check(buttons["AUTOMATIC"] and buttons["AUTOMATIC"].selected, "position Automatic selected")
 
 buttons["UNLOCKED"]:Click()
@@ -244,6 +245,8 @@ check(Last()[1] ~= "ResetAddon" and reset.label.text == "CLICK AGAIN TO RESET", 
 reset:Click()
 check(Last()[1] == "ResetAddon" and Last()[2] == "FloAspectBar", "second click resets")
 
+checks["Spell 5118"]:Click()
+check(Last()[1] == "ToggleSpell" and Last()[2] == 4, "the aspect after it still toggles its own position (4)")
 buttons["HELP AND BUG REPORTS"]:Click()
 local dialog = FloAspectBarCopyDialog
 check(dialog and dialog.shown and dialog.box.text == "https://github.com/paradosi/FloAspectBar-Classic", "help opens the link")
